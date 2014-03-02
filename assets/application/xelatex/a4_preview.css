@@ -1,0 +1,19 @@
+  .a4-wrapper .a4-page{
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 15px;
+        width: 880px;
+        height: 1245px;
+        background-color: #FFF;
+        background-image: url("paper-coner.png");
+        background-repeat: no-repeat;
+        margin-bottom: 20px;
+        overflow: hidden;
+        box-shadow: 0 6px 6px 1px #B3B4BD;
+        border:solid 1px #eeeeee;
+    }
+    .a4-wrapper .a4-page img{
+        width: 880px;
+        height: 1245px;
+
+    }

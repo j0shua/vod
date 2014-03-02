@@ -1,0 +1,36 @@
+@font-face {
+    font-family: 'thai_sans_literegular';
+    src: url('thaisanslite_r1.ttf')format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+}
+@font-face {
+    font-family: 'TH Niramit AS Bold Italic';
+    src: url('TH Niramit AS Bold Italic.ttf')format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'TH Niramit AS Bold';
+    src: url('TH Niramit AS Bold.ttf')format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+
+}
+@font-face {
+    font-family: 'TH Niramit AS Italic';
+    src: url('TH Niramit AS Italic.ttf')format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+}
+@font-face {
+    font-family: 'TH Niramit AS';
+    src: url('TH Niramit AS.ttf')format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+}
+

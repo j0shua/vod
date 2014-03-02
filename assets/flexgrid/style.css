@@ -1,0 +1,28 @@
+.flexigrid div.fbutton .add {
+    background: url("images/add.png") no-repeat scroll left center transparent;
+}
+.flexigrid div.fbutton .delete {
+    background: url("images/close.png") no-repeat scroll left center transparent;
+}
+
+.flexigrid div.fbutton .money {
+    background: url("images/money.png") no-repeat scroll left center transparent;
+}
+
+.flexigrid div.fbutton .money_delete {
+    background: url("images/money_delete.png") no-repeat scroll left center transparent;
+}
+
+.flexigrid div.fbutton .cog {
+    background: url("images/cog.png") no-repeat scroll left center transparent;
+}
+.flexigrid div.fbutton .money_report {
+    background: url("images/money_dollar.png") no-repeat scroll left center transparent;
+}
+.flexigrid div.fbutton .play {
+    background: url("images/control_play_blue.png") no-repeat scroll left center transparent;
+}
+.flexigrid div.fbutton .download {
+    background: url("images/download.png") no-repeat scroll left center transparent;
+}
+

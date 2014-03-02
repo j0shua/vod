@@ -1,0 +1,1 @@
+<iframe src="<?php echo site_url("resource/image_browser/iframe"); ?>">
