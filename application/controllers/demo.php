@@ -233,6 +233,15 @@ class demo extends CI_Controller {
         $this->template->write_view('demo/flowplayer_rtmp', $data);
         $this->template->render();
     }
+    
+     function video_js() {
+        $this->template->load_video_js();
+        
+        $data['video_path'] = 'rtsp://www.vod-researchproject.info:1936/vod_researchproject/sample2.mp4';
+        $data['video_path_iphone'] = 'http://www.vod-researchproject.info:1936/vod_researchproject/mp4:sample2.mp4/playlist.m3u8';
+        $this->template->write_view('demo/video_js', $data);
+        $this->template->render();
+    }
 
     function youtube() {
         $url = 'http://www.youtube.com/watch?v=9bZkp7q19f0&feature=related';

@@ -1,32 +1,87 @@
-<div class="grid_12">
-    <h1>แก้ไขสมาชิก</h1>
-    <form id="normalform" autocomplete="off" method="post" action="<?php echo $form_acction; ?>">
-        <input type="hidden" name="uid" value="<?php echo $uid; ?>">
+<h1 class="main-title">โปรไฟล์</h1>
+
+<div class="grid_4">
+
+    <form class="normal-form" method="post" action="<?php echo $form_action; ?>" id="normalform">
+        <input type="hidden" id="uid" name="form_data[uid]" value="<?php echo $form_data['uid']; ?>" >
         <p>
-            <label for="name" class="grid_2">Username <span class="important">*</span><span class="less-important">(required)</span></label>
-            <input type="text" id="form_name" name="name" value="<?php echo $username; ?>">
+            <label for="first_name" >ชื่อ</label>
+            <input type="text" id="first_name" name="form_data[first_name]" value="<?php echo $form_data['first_name']; ?>" maxlength="50">
+
+        </p>
+        <p>
+            <label for="last_name" >นามสกุล</label>
+            <input type="text" id="last_name" name="form_data[last_name]" value="<?php echo $form_data['last_name']; ?>" maxlength="50">
 
         </p>
 
         <p>
-            <label for="email" class="grid_2">Email <span class="important">*</span><span class="less-important">(required)</span></label>
-            <input type="text" id="form_email" name="email" value="<?php echo $email; ?>">
+            <label for="sex" >เพศ</label>
+            <?php
+            echo form_dropdown('form_data[sex]', $sex_options, $form_data['sex']);
+            ?>
+
 
         </p>
         <p>
-            <label for="pass" class="grid_2">password <span class="important">*</span><span class="less-important">(required)</span></label>
-            <input type="password" id="form_pass" name="pass" value="">
+            <label for="sex" >จังหวัด</label>
+            <?php
+            echo form_dropdown('form_data[province_id]', $province_options, $form_data['province_id']);
+            ?>
+
 
         </p>
-        <input type="submit" value="บันทึก" name="filter" id="btn-filter" class="btn-submit">
-        <a href="<?php echo $cancel_link; ?>" class="btn-a">ยกเลิก</a>
+        <p>
+            <label for="birthday" >วันเกิด</label>
+
+            <input id="birthday" type="text" name="form_data[birthday]" value="<?php echo $form_data['birthday']; ?>">
+
+        </p>
+        <p>
+            <label for="school_name" >โรงเรียน</label>
+            <input type="text" id="school_name" name="form_data[school_name]" value="<?php echo $form_data['school_name']; ?>">
+        </p>
+        <p>
+            <label for="degree_id" >ชั้นเรียน</label>
+            <?php
+            echo form_dropdown('form_data[degree_id]', $degree_id_options, $form_data['degree_id'], 'id="degree_id"');
+            ?>
+        </p>
+        <p>
+            <label for="phone_number" >เบอร์โทรศัพท์</label>
+            <input class="number-only" id="phone_number" type="text" name="form_data[phone_number]" value="<?php echo $form_data['phone_number']; ?>">
+        </p>
+        <p>
+            <label for="active" >สถานะ</label>
+            <?php
+            echo form_dropdown('form_data[active]', $active_options, $form_data['active'], 'id="active"');
+            ?>
+        </p>
+        <input type="submit" class="btn-submit" id="form_submit" name="submit" value="บันทึก">
+        <a class="btn-a" href="<?php echo $cancel_url; ?>">ยกเลิก</a>
+        <p class="hide important" id="response"></p>
+
+
     </form>
 </div>
+<div class="grid_3">
+    <?php
+    if (is_array($this->session->flashdata('form_error'))) {
+        echo '<div class="messages error">';
+        foreach ($this->session->flashdata('form_error') as $v) {
+            echo '<p>' . $v . '</p>';
+        }
+        echo '</div>';
+    }
+    ?>
+</div>
 <script>
-    $(function(){
-        $("#normalform").submit(function(){
-            return true;
-        });
-    });
+<?php
+if ($script_var) {
+    foreach ($script_var as $script_k => $script_v) {
+        echo 'var ' . $script_k . '="' . $script_v . '";';
+    }
+}
+?>
 </script>
 

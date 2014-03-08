@@ -36,7 +36,8 @@ class users extends CI_Controller {
         $data['title'] = 'จัดการผู้ใช้';
         $data['role_options'] = $this->users_model->get_role_options('ใดๆ', 1);
         $data['grid_menu'] = array(
-                //  array('url' => site_url('admin/users/add'), 'title' => 'เพิ่มผู้ใช้', 'extra' => ''),
+            array('url' => site_url('admin/users/add/teacher'), 'title' => 'เพิ่มครู', 'extra' => ''),
+            array('url' => site_url('admin/users/add/student'), 'title' => 'เพิ่มนักเรียน', 'extra' => ''),
         );
         $data['main_side_menu'] = $this->admin_menu_model->main_side_menu('users');
         $data['active_options'] = array('' => 'ใดๆ', '0' => 'ปิดการใช้งาน', '1' => 'เปิดการใช้งาน', '2' => 'รอการอนุมัติ');
@@ -52,26 +53,76 @@ class users extends CI_Controller {
     /**
      * เพิ่มข้อมูลสมาชิก
      */
-    function add() {
+    function add($user_type) {
+        
+        switch ($user_type) {
+            case 'teacher':
+                $label_degree = 'สอนชั้น';
+                $rid = 3;
+                $title = 'เพิ่มครู';
+                break;
+            case 'student':
+                $label_degree = 'เรียนชั้น';
+                $rid = 2;
+                $title = 'เพิ่มนักเรียน';
+                break;
+
+            default:
+                exit();
+                break;
+        }
         $this->auth->access_limit($this->auth->permis_users);
         $this->template->load_typeonly();
-        $this->template->application_script('admin/users/input_form.js');
+        $this->template->application_script('admin/users/add_form.js');
         $form_data = $this->users_model->get_form_data();
+        $form_data['rid'] = $rid;
         $data = array(
-            'form_action' => site_url('admin/users/do_save'),
-            'cancel_link' => site_url('admin/users'),
+            'title' => $title,
+            'username_field'=>$this->auth->username_field,
+            'form_action' => site_url('admin/users/do_add/'.$user_type),
+            'cancel_url' => site_url('admin/users'),
             'form_error' => $this->session->flashdata('form_error'),
             'form_data' => $form_data,
             'sex_options' => $this->ddoption_model->get_sex_options(),
             'province_options' => $this->ddoption_model->get_province_options(),
             'degree_id_options' => $this->ddoption_model->get_degree_id_options(),
+            'active_options' => array('0' => 'ปิดการใช้งาน', '1' => 'เปิดการใช้งาน'),
+            'label_degree' => $label_degree
         );
         $data['script_var'] = array(
             'ajax_school_name_url' => site_url('user/ajax_school_name')
         );
 
-        $this->template->write_view('admin/users/input_form', $data);
+        $this->template->write_view('admin/users/add_form', $data);
         $this->template->render();
+    }
+
+    function do_add($user_type) {
+        $this->auth->access_limit($this->auth->permis_users);
+        $form_data = $this->input->post('form_data');
+        if (!$this->users_model->add_user($form_data)) {
+            if ($form_data['uid'] == '') {
+                redirect('admin/users/add/'.$user_type);
+            } else {
+                redirect('admin/users/edit/' . $form_data['uid']);
+            }
+        } else {
+            if ($form_data['uid'] == '') {
+                $data = array(
+                    'time' => 0,
+                    'url' => site_url('admin/users'),
+                    'heading' => 'เพิ่มสมาชิก',
+                    'message' => '<p>เพิ่มสมาชิกเสร็จสิ้น</p>');
+            } else {
+                $data = array(
+                    'time' => 0,
+                    'url' => site_url('admin/users'),
+                    'heading' => 'แก้ไขสมาชิก',
+                    'message' => '<p>แก้ไขสมาชิกเสร็จสิ้น</p>');
+            }
+            
+            //$this->load->view('refresh_page', $data);
+        }
     }
 
     /**
@@ -86,7 +137,7 @@ class users extends CI_Controller {
         $this->auth->access_limit($this->auth->permis_users);
 
         $this->template->load_typeonly();
-        $this->template->application_script('admin/users/input_form.js');
+        $this->template->application_script('admin/users/edit_form.js');
         $form_data = $this->users_model->get_account_data($uid);
         if ($form_data['active'] == 1 || $form_data['active'] == 0) {
             $active_options = array('0' => 'ปิดการใช้งาน', '1' => 'เปิดการใช้งาน');
@@ -95,7 +146,7 @@ class users extends CI_Controller {
         }
 
         $data = array(
-            'form_action' => site_url('admin/users/do_save'),
+            'form_action' => site_url('admin/users/do_edit'),
             'cancel_url' => site_url('admin/users'),
             'form_data' => $form_data,
             'sex_options' => $this->ddoption_model->get_sex_options(),
@@ -108,14 +159,14 @@ class users extends CI_Controller {
         );
 
 
-        $this->template->write_view('admin/users/input_form', $data);
+        $this->template->write_view('admin/users/edit_form', $data);
         $this->template->render();
     }
 
-    function do_save() {
+    function do_edit() {
         $this->auth->access_limit($this->auth->permis_users);
         $form_data = $this->input->post('form_data');
-        if (!$this->users_model->save_profile($form_data)) {
+        if (!$this->users_model->edit_user($form_data)) {
             if ($form_data['uid'] == '') {
                 redirect('admin/users/add');
             } else {

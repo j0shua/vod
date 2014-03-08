@@ -1,13 +1,7 @@
 <h1 class="main-title">โปรไฟล์</h1>
-<div class="hr-940px grid_12 "></div>
-<div class="grid_9">
-    <?php
-    if (is_array($this->session->flashdata('form_error'))) {
-        foreach ($this->session->flashdata('form_error') as $v) {
-            echo '<p>' . $v . '</p>';
-        }
-    }
-    ?>
+
+<div class="grid_4">
+
     <form class="normal-form" method="post" action="<?php echo $form_action; ?>" id="normalform">
         <input type="hidden" id="uid" name="form_data[uid]" value="<?php echo $form_data['uid']; ?>" >
         <p>
@@ -60,7 +54,7 @@
         <p>
             <label for="active" >สถานะ</label>
             <?php
-            echo form_dropdown('form_data[active]', $active_options, $form_data['active'],'id="active"');
+            echo form_dropdown('form_data[active]', $active_options, $form_data['active'], 'id="active"');
             ?>
         </p>
         <input type="submit" class="btn-submit" id="form_submit" name="submit" value="บันทึก">
@@ -69,6 +63,17 @@
 
 
     </form>
+</div>
+<div class="grid_3">
+    <?php
+    if (is_array($this->session->flashdata('form_error'))) {
+        echo '<div class="messages error">';
+        foreach ($this->session->flashdata('form_error') as $v) {
+            echo '<p>' . $v . '</p>';
+        }
+        echo '</div>';
+    }
+    ?>
 </div>
 <script>
 <?php

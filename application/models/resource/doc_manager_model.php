@@ -22,6 +22,9 @@ class doc_manager_model extends CI_Model {
     }
 
     public function find_all($page, $qtype, $query, $rp, $sortname, $sortorder) {
+        if ($sortname == 'title_play') {
+            $sortname = 'title';
+        }
         $publish_options = $this->CI->ddoption_model->get_publish_options();
         $privacy_options = $this->CI->ddoption_model->get_privacy_options();
         if ($qtype == 'custom') {

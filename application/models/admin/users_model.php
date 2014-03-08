@@ -7,18 +7,27 @@
  */
 class users_model extends CI_Model {
 
-    private $form_error = array();
-    private $form_valid = TRUE;
-    private $username = '';
-    private $email = '';
-    private $password = '';
-    private $real_email = TRUE;
-    private $personal_document_dir;
+    var $form_error = array();
+    var $form_valid = TRUE;
+    var $username = '';
+    var $username_field;
+    var $is_parent_site;
+    var $standalone_site;
+    var $email = '';
+    var $password = '';
+    var $real_email = FALSE;
+    var $personal_document_dir;
+    var $password_length = array('min' => 4, 'max' => 16);
+    var $time;
 
     function __construct() {
         parent::__construct();
         $this->load->helper('time');
         $this->personal_document_dir = $this->config->item('personal_document_dir');
+        $this->username_field = $this->config->item('username_field');
+        $this->is_parent_site = $this->config->item('is_parent_site');
+        $this->standalone_site = $this->config->item('standalone_site');
+        $this->time = time();
     }
 
     public function find_all($page, $qtype, $query, $rp, $sortname, $sortorder) {
@@ -108,7 +117,7 @@ class users_model extends CI_Model {
                     $row['user_fullname'] .= anchor('https://www.facebook.com/' . $row['facebook_user_id'], 'FB', 'target="_blank"');
                 }
             }
-
+//print_r($user_detail);
             $row = array_merge($row, $user_detail);
             $row['money'] = number_format($row['money'], 2);
             $row['money_bonus'] = number_format($row['money_bonus'], 2);
@@ -139,7 +148,7 @@ class users_model extends CI_Model {
                         if ($v != '') {
                             switch ($k) {
                                 case 'rid':
-                                    $this->db->where('u_user.' . $k, $v); 
+                                    $this->db->where('u_user.' . $k, $v);
                                     break;
                                 default:
                                     $this->db->where($k, $v);
@@ -259,56 +268,113 @@ class users_model extends CI_Model {
         }
     }
 
-    public function save($post) {
-        //$this->username = $post['username'];
-        $this->email = $post['email'];
-        $this->password = $post['password'];
-// Check Form data
-        $this->check_username();
-        $this->check_password();
-        $this->check_email();
-// return ค่า        
-        if ($this->form_valid) {
-            $this->db->trans_start();
-            $this->db->set('rid', 2);
-            //$this->db->set('username', $this->username);
-            if ($this->password != '') {
-                $this->db->set('password', $this->encode_password($this->password));
-            }
-            $this->db->set('email', $this->email);
-            $this->db->set('active', 1);
-            if ($post['uid'] == '') { // insert
-                $this->db->insert('u_user');
-                $uid = $this->db->insert_id();
-                $this->db->set('uid', $uid);
-                $this->db->set('first_name', $this->username);
-                $this->db->set('last_name', '-');
-                $this->db->set('full_name', $this->username . ' -');
-                $this->db->set('sex', '');
-                $this->db->set('birthday', '');
-                $this->db->insert('u_user_detail');
-
-                $this->db->set('personal_dir', $this->make_personal_dir($uid));
-                $this->db->where('uid', $uid);
-                $this->db->update('u_user');
+    public function add_user($data) {
+        $bvalid = TRUE;
+        if ($this->username_field == 'username') {
+            $data['username'] = trim($data['username']);
+            if ($this->check_username($data['username'])) {
+                $bvalid &= TRUE;
             } else {
-                $uid = $post['uid'];
-                $this->db->where('uid', $uid);
-                $this->db->update('u_user');
+                $data['username'] = '';
+                $bvalid &= FALSE;
             }
-            $this->db->trans_complete();
         } else {
-            $this->session->set_flashdata('form_error', $this->get_form_error());
-            $this->session->set_flashdata('form_data', $this->get_form_data());
+            if ($this->check_email($data['email'])) {
+                $bvalid &= TRUE;
+            } else {
+                $data['email'] = '';
+                $bvalid &= FALSE;
+            }
         }
-        return $this->form_valid;
+        if ($this->check_password($data['password'], $data['password_confirm'])) {
+            $bvalid &= TRUE;
+        } else {
+            $data['password'] = '';
+            $data['password_confirm'] = '';
+            $bvalid &= FALSE;
+        }
+        if ($this->check_first_name($data['first_name'])) {
+            $bvalid &= TRUE;
+        } else {
+            $data['first_name'] = '';
+            $bvalid &= FALSE;
+        }
+        if ($this->check_last_name($data['last_name'])) {
+            $bvalid &= TRUE;
+        } else {
+            $data['last_name'] = '';
+            $bvalid &= FALSE;
+        }
+        if ($this->check_sex($data['sex'])) {
+            $bvalid &= TRUE;
+        } else {
+            $bvalid &= FALSE;
+        }
+        if ($this->check_birthday($data['birthday'])) {
+            $bvalid &= TRUE;
+        } else {
+            $data['birthday'] = '';
+            $bvalid &= FALSE;
+        }
+        if ($bvalid) {
+            $this->db->trans_start();
+            $this->db->set('rid', $data['rid']);
+            if ($this->username_field == 'username') {
+                $this->db->set('username', $data['username']);
+                $this->db->set('email', $data['email']);
+            } else {
+                $this->db->set('email', $data['email']);
+            }
+
+            $this->db->set('password', $this->encode_password($data['password']));
+            $this->db->set('active', $data['active']);
+            $this->db->set('register_time', $this->time);
+            $this->db->insert('u_user');
+            $uid = $this->db->insert_id();
+            $this->db->set('uid', $uid);
+            $this->db->set('first_name', $data['first_name']);
+            $this->db->set('last_name', $data['last_name']);
+            $this->db->set('full_name', $data['first_name'] . ' ' . $data['last_name']);
+            $this->db->set('sex', $data['sex']);
+            $this->db->set('birthday', $data['birthday']);
+            $this->db->set('province_id', $data['province_id']);
+            $this->db->set('school_name', $data['school_name']);
+            $this->db->set('degree_id', $data['degree_id']);
+            $this->db->set('phone_number', $data['phone_number']);
+            $this->db->insert('u_user_detail');
+            $this->db->set('personal_dir', $this->make_personal_dir($uid));
+            $this->db->where('uid', $uid);
+            $this->db->update('u_user');
+            $this->db->trans_complete();
+            return TRUE;
+        } else {
+            $form_data = array(
+                'uid' => $data['uid'],
+                'username' => $data['username'],
+                'password' => $data['password'],
+                'password_confirm' => $data['password_confirm'],
+                'email' => $data['email'],
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'sex' => $data['sex'],
+                'birthday' => $data['birthday'],
+                'degree_id' => $data['degree_id'],
+                'province_id' => $data['province_id'],
+                'phone_number' => $data['phone_number'],
+                'school_name' => $data['school_name'],
+                'active' => $data['active']
+            );
+            $this->session->set_flashdata('form_error', $this->get_form_error());
+            $this->session->set_flashdata('form_data', $form_data);
+            return FALSE;
+        }
     }
 
     /**
      * ทำการแก้ไข โปรไฟล์ของตนเอง
      * @param array $data
      */
-    function save_profile($data) {
+    function edit_user($data) {
         $bvalid = TRUE;
         if ($this->check_first_name($data['first_name'])) {
             $bvalid &= TRUE;
@@ -347,8 +413,10 @@ class users_model extends CI_Model {
             );
 
             $this->db->where('uid', $data['uid']);
+            echo $data['uid'];
             $this->db->from('u_user_detail');
             if ($this->db->count_all_results() > 0) {
+                print_r($set);
                 $this->db->set($set);
                 $this->db->where('uid', $data['uid']);
                 $this->db->update('u_user_detail');
@@ -365,10 +433,16 @@ class users_model extends CI_Model {
             return TRUE;
         } else {
             $form_data = array(
+                'uid' => $data['uid'],
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
                 'sex' => $data['sex'],
-                'birthday' => $data['birthday']
+                'birthday' => $data['birthday'],
+                'degree_id' => $data['degree_id'],
+                'province_id' => $data['province_id'],
+                'phone_number' => $data['phone_number'],
+                'school_name' => $data['school_name'],
+                'active' => $data['active']
             );
             $this->session->set_flashdata('form_error', $this->get_form_error());
             $this->session->set_flashdata('form_data', $form_data);
@@ -460,6 +534,48 @@ class users_model extends CI_Model {
         }
     }
 
+    private function check_username($username) {
+        if (!$this->standalone_site) {
+            if ($this->is_parent_site) {
+                $this->db->close();
+                $this->db->where('username', $username);
+                $this->db->where('username !=', '');
+                if ($this->db->count_all_results('u_username_main') > 0) {
+                    $this->set_form_error('ยูสเซอร์เนม ซ้ำ');
+                    return FALSE;
+                }
+            } else {
+                $this->db_parent->close();
+                $this->db_parent->where('username', $username);
+                if ($this->db_parent->count_all_results('u_username_main') > 0) {
+                    $this->set_form_error('ยูสเซอร์เนม ซ้ำ');
+                    return FALSE;
+                }
+            }
+        }
+        $this->db->close();
+        $this->db->where('username', $username);
+        $this->db->where('username !=', '');
+        if ($this->db->count_all_results('u_user') > 0) {
+            $this->set_form_error('ยูสเซอร์เนม ซ้ำ');
+            return FALSE;
+        }
+        $result = strlen($username);
+        if ($result == '') {
+            $this->set_form_error('ต้องกรอกยูสเซอร์เนม');
+            return FALSE;
+        }
+        if ($result < 4) {
+            $this->set_form_error('ยูสเซอร์เนมน้อยกว่า 4 ตัวอักษร');
+            return FALSE;
+        }
+        if ($result > 16) {
+            $this->set_form_error('ยูสเซอร์เนมมากกว่า 16 ตัวอักษร');
+            return FALSE;
+        }
+        return TRUE;
+    }
+
     /**
      * เช็คชื่อ
      * @param type $first_name
@@ -539,10 +655,13 @@ class users_model extends CI_Model {
         if (is_array($this->session->flashdata('form_data'))) {
             return $this->session->flashdata('form_data');
         } else {
-            $this->form_data = array(
-                'username' => '',
-                'email' => ''
-            );
+            foreach ($this->db->list_fields('u_user') as $v) {
+                $row[$v] = '';
+            }
+            foreach ($this->db->list_fields('u_user_detail') as $v) {
+                $row[$v] = '';
+            }
+            $this->form_data = $row;
             return $this->form_data;
         }
     }
@@ -589,7 +708,9 @@ class users_model extends CI_Model {
         }
 
 
-        return array_merge($r1, $r2);
+        $result = array_merge($r1, $r2);
+        $result['uid'] = $uid;
+        return $result;
     }
 
     /**

@@ -40,7 +40,7 @@ class template {
 
     public function __construct() {
         $this->CI = & get_instance();
-        
+
         $this->load_jquery();
         $this->load_jquery_ui();
         $this->site_name = $this->CI->config->item('site_name');
@@ -400,6 +400,11 @@ class template {
         $this->script(base_url() . 'assets/jwplayer/jwplayer.js');
 //        $script_text = 'jwplayer.key="HaokVPtotTu0JuFNcXxoc+Us7ZNMPFKSFVKb5Q==";';
         //  $this->script_var = '<script>' . $script_text . '</script>';
+    }
+
+    public function load_video_js() {
+        $this->script(base_url() . 'assets/video-js/video.js');
+        $this->link('assets/video-js/video-js.min.css');
     }
 
     public function load_jquery_treeview() {
