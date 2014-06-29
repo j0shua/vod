@@ -18,8 +18,8 @@ class advance_report extends CI_Controller {
             $now_month = date('n');
             $now_year = date('Y');
             if (date('j') == 1) {
-                if (data('n') == 1) {
-                    $now_year = data('Y') - 1;
+                if (date('n') == 1) {
+                    $now_year = date('Y') - 1;
                     $now_month = 12;
                 } else {
                     $now_month = date('n') - 1;

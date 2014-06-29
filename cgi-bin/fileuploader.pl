@@ -2,7 +2,7 @@
     use strict;
     use CGI::Carp qw(fatalsToBrowser);
     use Digest::MD5;
-    my $upload_root = '/var/www/';
+    my $upload_root = '/var/www/temp/';
     
     my $maxFileSize = 2*1024 * 1024 * 1024; # 1/2mb max file size...
     use CGI;

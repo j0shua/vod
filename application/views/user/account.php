@@ -74,7 +74,7 @@
 
         <p class="clearfix"><span class="account_label">ที่อยู่อีเมล์</span> <?php echo $form_data['email']; ?> <a href="<?php echo $edit_email_url; ?>" class="btn-a-small">แก้ไข</a></p>
     <?php } else { ?>
-        <h2 class="head1">ที่อยู่อีเมล์</h2> 
+        <h2 class="head1">ที่อยู่อีเมล์</h2>
 
         <p class="clearfix"><span class="account_label">ที่อยู่อีเมล์</span> <?php echo $form_data['email']; ?> </p>
     <?php } ?>
@@ -82,51 +82,25 @@
 
     <p class="clearfix"><a href="<?php echo $edit_password_url; ?>" class="btn-a">เปลี่ยนรหัสผ่าน</a></p>
 </div>
-<div class="grid_3">
-    <?php if ($form_data['rid'] == 3) { ?>
-
+<?php if ($form_data['rid'] == 3) { ?>
+    <div class="grid_3">
         <h2  class="head1">ข้อมูลเอกสารสำคัญ</h2>
         <p>
             <span  class="account_label" style="width: 225px;">รูปถ่ายบัตรข้าราชการ/บัตรประชาชน</span> <a href="<?php echo site_url('user/personal_document/identity_document') ?>" class="btn-a-small">เปิดดู</a>
         </p>
         <p>
             <span  class="account_label" style="width: 225px;">รูปถ่ายใบรับรองวิชาชีพครู</span> <a href="<?php echo site_url('user/personal_document/educational_document') ?>" class="btn-a-small">เปิดดู</a>
-        </p> 
-
-        <?php if ($make_money) { ?>
-
-            <h2  class="head1">จำนวนเงิน</h2>
-            <p> <span  class="account_label">เงินคงเหลือ</span class="account_label"> <?php echo number_format($form_data['money'] + $form_data['money_bonus'], 2); ?> <b>บาท</b> </p>
-            <h2  class="head1">ข้อมูลบัญชีธนาคาร</h2>
-            <p> 
-                <span  class="account_label">ธนาคาร</span class="account_label"> 
-                <?php echo $form_data['bank_name']; ?>
-            </p>
-            <p> 
-                <span  class="account_label">สาขา</span class="account_label"> 
-                <?php echo $form_data['bank_branch_name']; ?>
-            </p>
-            <p> 
-                <span  class="account_label">หมายเลขบัญชี</span class="account_label"> 
-                <?php echo $form_data['bank_account_number']; ?>
-            </p>
-            <p> 
-                <span  class="account_label">ชื่อบัญชี</span class="account_label"> 
-                <?php echo $form_data['bank_account_name']; ?>
-            </p>
-            <a href="<?php echo $edit_bank_account_url; ?>" class="btn-a">แก้ไขบัญชีธนาคาร</a>
-
-
-
-
-        <?php } ?>
-    <?php } else { ?>
+        </p>
+    </div>
+<?php } ?>
+<?php if ($make_money) { ?>
+    <div class="grid_3">
         <h2  class="head1">จำนวนเงิน</h2>
         <p> <span  class="account_label">เงินคงเหลือ</span class="account_label"> <?php echo number_format($form_data['money'] + $form_data['money_bonus'], 2); ?> <b>บาท</b> </p>
 
-    <?php } ?>
-</div>
 
+    </div>
+<?php } ?>
 
 <style>
     .account_label{

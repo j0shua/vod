@@ -1,6 +1,5 @@
 
 var markItUpSettings = {
-//    resizeHandle: true,
     onShiftEnter: {
         keepDefault: false,
         replaceWith: '\\\\\n'

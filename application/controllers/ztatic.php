@@ -141,7 +141,7 @@ class ztatic extends CI_Controller {
                 //มีทั้งสอง
                 $this->load->library('zip');
                 //Dycontent
-                $this->load->model('resource//xelatex_dycontent_merge_model');
+                $this->load->model('resource/xelatex_dycontent_merge_model');
                 $this->xelatex_dycontent_merge_model->init_content($a_resource_id_dycontent);
                 $result_dycontent = $this->xelatex_dycontent_merge_model->render_pdf();
                 $this->zip->read_file($result_dycontent['files'][0]);
@@ -189,7 +189,11 @@ class ztatic extends CI_Controller {
                     if ($q_doc->num_rows() > 1) {
                         $this->load->library('zip');
                         foreach ($q_doc->result_array() as $r_doc) {
-                            $this->zip->read_file($full_doc_dir . $r_doc['file_path']);
+                            //$this->zip->read_file($full_doc_dir . $r_doc['file_path']);
+                            $file_detail = pathinfo($r_doc['file_path']);
+                            $file_name = $r_doc['title'] . '_' . $file_detail['filename'] . '.' . $file_detail['extension'];
+                            $file_name = iconv('UTF-8', 'TIS-620', $file_name);
+                            $this->zip->read_file_rename($full_doc_dir . $r_doc['file_path'], $file_name);
                         }
                         $this->zip->download('เอกสารประกอบการเรียน.zip');
                     }
@@ -204,13 +208,127 @@ class ztatic extends CI_Controller {
                     WHERE r_resource_doc.resource_id=r_resource.resource_id";
                     $q_doc = $this->db->query($sql);
                     $r_doc = $q_doc->row_array();
-
                     $file_detail = pathinfo($r_doc['file_path']);
                     $this->load->helper('download');
                     $full_doc_dir = $this->config->item('full_doc_dir');
-
-                    force_download_file($r_doc['title'] . $file_detail['extension'], $full_doc_dir . $r_doc['file_path']);
+                    force_download_file($r_doc['title'] . '.' . $file_detail['extension'], $full_doc_dir . $r_doc['file_path']);
                 }
+            }
+        }
+    }
+
+    function download_video_join_content() {
+        $this->load->model('play/play_resource_model');
+        $resource_id = $this->input->get('resource_id');
+        $a_resource_id_join = $this->play_resource_model->get_join_content_in_video($resource_id);
+        if (count($a_resource_id_join) == 1) {
+            redirect('v/' . $a_resource_id_join[0]);
+        }
+        //print_r($a_resource_id_join);
+        $a_resource_id_doc = array();
+        $a_resource_id_dycontent = array();
+        foreach ($a_resource_id_join as $resource_id_join) {
+            $this->db->where('resource_id', $resource_id_join);
+            $q3 = $this->db->get('r_resource');
+            foreach ($q3->result_array() as $v3) {
+
+                if ($v3['resource_type_id'] == 4) {
+                    $a_resource_id_dycontent[] = $v3['resource_id'];
+                }
+                if ($v3['resource_type_id'] == 2) {
+                    $a_resource_id_doc[] = $v3['resource_id'];
+                }
+            }
+        }
+        $a_resource_id_dycontent = array_unique($a_resource_id_dycontent);
+        $a_resource_id_doc = array_unique($a_resource_id_doc);
+        $count_dycontent = count($a_resource_id_dycontent);
+        $count_doc = count($a_resource_id_doc);
+        // echo $count_dycontent . '|' . $count_doc;
+        //exit();
+        if ($count_dycontent > 0 && $count_doc > 0) {
+
+            //exit("ALL");
+            //มีทั้งสอง
+            $this->load->library('zip');
+            //Dycontent
+            $this->load->model('resource//xelatex_dycontent_merge_model');
+            $this->xelatex_dycontent_merge_model->init_content($a_resource_id_dycontent);
+            $result_dycontent = $this->xelatex_dycontent_merge_model->render_pdf();
+            $this->zip->read_file($result_dycontent['files'][0]);
+            //Doc
+            $full_doc_dir = $this->config->item('full_doc_dir');
+            $this->db->where_in('resource_id', $a_resource_id_doc);
+            $q_doc = $this->db->get('r_resource_doc');
+            foreach ($q_doc->result_array() as $r_doc) {
+                $this->zip->read_file($full_doc_dir . $r_doc['file_path']);
+            }
+            $this->zip->download('เอกสารประกอบการเรียน.zip');
+        } else if ($count_dycontent > 0) {
+
+            // มีแค่ dycontent
+            if ($count_dycontent == 1) {
+
+                redirect('play/play_resource/pdf_dycontent/' . $a_resource_id_dycontent[0]);
+            } else {
+
+
+                $this->load->model('resource//xelatex_dycontent_merge_model');
+                $this->xelatex_dycontent_merge_model->init_content($a_resource_id_dycontent);
+                $result = $this->xelatex_dycontent_merge_model->render_pdf();
+                //print_r($result);
+                $this->load->helper('download');
+
+                force_download_file('เอกสารประกอบการเรียน.pdf', $result['files'][0]);
+            }
+        } else if ($count_doc > 0) {
+
+            // มีแค่ doc
+            $full_doc_dir = $this->config->item('full_doc_dir');
+
+            if (count($a_resource_id_doc) > 1) {
+
+                $where_in = implode(",", $a_resource_id_doc);
+
+                $sql = "SELECT 
+                    r_resource.title,
+                    r_resource.resource_id,
+                    r_resource_doc.file_path
+                    FROM (`r_resource_doc`, 
+                    (select resource_id, `title` from r_resource 
+                    where resource_id in($where_in)) as r_resource) 
+                    WHERE r_resource_doc.resource_id=r_resource.resource_id";
+                $q_doc = $this->db->query($sql);
+//                echo $q_doc->num_rows();
+//                exit();
+                if ($q_doc->num_rows() > 1) {
+                    $this->load->library('zip');
+                    foreach ($q_doc->result_array() as $r_doc) {
+                        $file_detail = pathinfo($r_doc['file_path']);
+                        $file_name = $r_doc['title'] . '_' . $file_detail['filename'] . '.' . $file_detail['extension'];
+                        $file_name = iconv('UTF-8', 'TIS-620', $file_name);
+                        $this->zip->read_file_rename($full_doc_dir . $r_doc['file_path'], $file_name);
+                    }
+                    //  exit();
+                    $this->zip->download('เอกสารประกอบการเรียน.zip');
+                }
+            } else {
+                $sql = "SELECT 
+                    r_resource.title,
+                    r_resource.resource_id,
+                    r_resource_doc.file_path
+                    FROM (`r_resource_doc`, 
+                    (select resource_id, `title` from r_resource 
+                    where resource_id = " . $a_resource_id_doc[0] . ") as r_resource) 
+                    WHERE r_resource_doc.resource_id=r_resource.resource_id";
+                $q_doc = $this->db->query($sql);
+                $r_doc = $q_doc->row_array();
+
+                $file_detail = pathinfo($r_doc['file_path']);
+                $this->load->helper('download');
+                $full_doc_dir = $this->config->item('full_doc_dir');
+
+                force_download_file($r_doc['title'] . '.' . $file_detail['extension'], $full_doc_dir . $r_doc['file_path']);
             }
         }
     }

@@ -54,7 +54,7 @@ class phpavconv {
                 if ($return_command) {
                     return $command;
                 } else {
-                    // exit($command);
+                   // exit($command);
                     exec($command);
                 }
             }

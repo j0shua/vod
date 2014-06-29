@@ -19,7 +19,6 @@ class coupon_manager extends CI_Controller {
         $data['grid_menu'] = array(
             array('url' => site_url('utopup/coupon_manager/add_book_coupon'), 'title' => 'สร้างรหัสหนังสือ', 'extra' => ''),
             array('url' => site_url('utopup/coupon_manager/add_coupon'), 'title' => 'สร้างรหัสคูปอง', 'extra' => ''),
-            array('url' => site_url('utopup/coupon_manager/add_topup_card'), 'title' => 'สร้างบัตรเติมเงิน', 'extra' => ''),
         );
         $this->template->script_var(array(
             'ajax_grid_url' => site_url('utopup/coupon_manager/ajax_mian_grid')
@@ -59,7 +58,7 @@ class coupon_manager extends CI_Controller {
             'form_action' => site_url('utopup/coupon_manager/do_add_book_coupon'),
             'cancel_link' => site_url('utopup/coupon_manager/')
         );
-        $data['form_data'] = array('coupon_type' => 'bookcode', 'money_bonus' => 260, 'money' => 0);
+        $data['form_data'] = array('coupon_type' => 'bookcode', 'money' => 260);
         $data['script_var'] = array();
         $this->template->load_typeonly();
         $this->template->application_script('topup/coupon_manager/book_coupon_input.js');
@@ -68,8 +67,10 @@ class coupon_manager extends CI_Controller {
     }
 
     function do_add_book_coupon() {
-        $post = $this->input->post('data');
-        $this->coupon_model->gen_coupon_code($post['amount'], $post['money'], $post['money_bonus'], $post['coupon_type']);
+        $data = $this->input->post('data');
+
+
+        $this->coupon_model->gen_coupon_code($data['amount'], $data['money'], $data['coupon_type']);
         $data = array(
             'time' => 1,
             'url' => site_url('utopup/coupon_manager'),
@@ -82,20 +83,15 @@ class coupon_manager extends CI_Controller {
     function add_coupon() {
         $data = array(
             'title' => 'สร้างคูปอง',
-            'form_action' => site_url('utopup/coupon_manager/do_add_coupon'),
+            'form_action' => site_url('utopup/coupon_manager/add_coupon'),
             'cancel_link' => site_url('utopup/coupon_manager/')
         );
-
-        $data['form_data'] = array('cid' => '', 'coupon_type' => 'normal', 'coupon_code' => '', 'money_bonus' => 0, 'money' => 0);
+        $data['form_data'] = array('cid' => '', 'coupon_code' => '');
         $data['script_var'] = array();
         $this->template->load_typeonly();
         $this->template->application_script('topup/coupon_manager/coupon_input.js');
         $this->template->write_view('topup/coupon_manager/coupon_input', $data);
         $this->template->render();
-    }
-
-    function do_add_coupon() {
-        print_r($_POST);
     }
 
     function delete_coupon_fail($cfid) {
@@ -185,54 +181,6 @@ class coupon_manager extends CI_Controller {
 
         fclose($fp);
         force_download_file('code.csv', 'file.csv');
-    }
-
-    function coupon_used() {
-        $data['title'] = 'การใช้คูปอง';
-        $data['grid_menu'] = array(
-            array('url' => site_url('utopup/coupon_manager'), 'title' => 'จัดการคูปอง', 'extra' => ''),
-        );
-        $this->template->script_var(array(
-            'ajax_grid_url' => site_url('utopup/coupon_manager/ajax_coupon_used_grid')
-        ));
-        $data['main_side_menu'] = $this->topup_menu_model->main_side_menu('coupon_used');
-        $this->template->load_flexgrid();
-        $this->template->application_script('topup/coupon_manager/coupon_used_grid.js');
-        $this->template->write_view('topup/coupon_manager/coupon_used_grid', $data);
-        $this->template->render();
-    }
-
-    function ajax_coupon_used_grid() {
-        $a = $this->coupon_model->find_all_coupon_used($this->input->post('page', TRUE), $this->input->post('qtype', TRUE), $this->input->post('query', TRUE), $this->input->post('rp', TRUE), $this->input->post('sortname', TRUE), $this->input->post('sortorder', TRUE));
-        echo json_encode($a);
-    }
-
-    function add_topup_card() {
-        $data = array(
-            'title' => 'สร้างบัตรเติมเงิน',
-            'form_action' => site_url('utopup/coupon_manager/do_add_topup_card'),
-            'cancel_link' => site_url('utopup/coupon_manager/')
-        );
-        $data['form_data'] = array('coupon_type' => 'topup', 'money' => 100, 'money_bonus' => 0);
-        $data['script_var'] = array();
-        $this->template->load_typeonly();
-        $this->template->application_script('topup/coupon_manager/topup_card_input.js');
-        $this->template->write_view('topup/coupon_manager/topup_card_input', $data);
-        $this->template->render();
-    }
-
-    function do_add_topup_card() {
-        $post = $this->input->post('data');
-
-
-        $this->coupon_model->gen_coupon_code($post['amount'], $post['money'], $post['money_bonus'], $post['coupon_type']);
-        $data = array(
-            'time' => 1,
-            'url' => site_url('utopup/coupon_manager'),
-            'heading' => 'สร้างบัตรเติมเงินเสร็จสิ้น',
-            'message' => '<p>สร้างบัตรเติมเงินเสร็จสิ้น</p>'
-        );
-        $this->load->view('refresh_page', $data);
     }
 
 }

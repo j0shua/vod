@@ -52,13 +52,13 @@ class play_report extends CI_Controller {
             $this->template->application_script('report/play_report/main_grid_free.js');
         }
         $script_var = array(
-            'ajax_grid_url' => site_url('report/play_report/ajax_play_report') 
+            'ajax_grid_url' => site_url('report/play_report/ajax_play_report')
         );
         $this->template->script_var($script_var);
         if ($this->make_money) {
             $this->template->write_view('report/play_report/main_grid', $data);
         } else {
-            $this->template->write_view('report/play_report/main_grid_free', $data);
+            $this->template->write_view('report/play_report/main_grid_freesys', $data);
         }
         $this->template->render();
     }

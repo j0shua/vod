@@ -28,10 +28,6 @@ $(function() {
         $("#inner-dialog").html('<iframe title="โปรดรอ" id="iframe-resource-browser" src="' + iframe_video_manager_url + '">โปรดรอ</iframe>');
         $("#dialog").dialog("open");
     });
-     $("#btn-psearch-resource").click(function() {
-        $("#inner-dialog").html('<iframe title="โปรดรอ" id="iframe-resource-browser" src="' + iframe_pvideo_manager_url + '">โปรดรอ</iframe>');
-        $("#dialog").dialog("open");
-    });
 });
 function add_resource_id(id, array_resource_id) {
     $("#" + id).val(array_resource_id.join(","));

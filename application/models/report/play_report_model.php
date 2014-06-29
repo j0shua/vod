@@ -62,7 +62,7 @@ class play_report_model extends CI_Model {
         $this->db->order_by($sortname, $sortorder);
         $result = $this->db->get();
         $data['total'] = $total;
-        $user_data_view = array();
+
         foreach ($result->result_array() as $row) {
             $row['action'] = '';
             $row['uid_view'] = $row['uid_view'];
@@ -81,28 +81,14 @@ class play_report_model extends CI_Model {
             $row['first_time'] = thdate("Y-M-d H:i:s", $row['first_time']);
             $row['last_time'] = thdate("Y-M-d H:i:s", $row['last_time']);
 
-            if ($this->auth->is_superadmin() || $this->auth->is_superadmin()) {
-                if (!isset($user_data_view[$row['uid_view']])) {
-                    $user_data_view[$row['uid_view']] = $this->auth->get_user_data($row['uid_view']);
-                }
-
-
-                $row['user_view_fullname'] = anchor('admin/users/detail/' . $row['uid_view'], $user_data_view[$row['uid_view']]['full_name'], 'target="_blank"');
-                if ($user_data_view[$row['uid_view']]['facebook_user_id'] != 0) {
-                    if ($this->auth->make_money) {
-
-                        $row['user_view_fullname'] .= anchor('https://www.facebook.com/' . $user_data_view[$row['uid_view']]['facebook_user_id'], 'FB', 'target="_blank"');
-                    }
-                }
+            if ($this->auth->is_admin()) {
+                $row['user_view_fullname'] = anchor('admin/users/detail/' . $row['uid_view'], $this->get_user_fullname($row['uid_view']), 'target="_blank"');
                 $row['user_owner_fullname'] = anchor('admin/users/detail/' . $row['uid_owner'], $this->get_user_fullname($row['uid_owner']), 'target="_blank"');
             } else {
                 $row['user_view_fullname'] = $this->get_user_fullname($row['uid_view']);
                 $row['user_owner_fullname'] = $this->get_user_fullname($row['uid_owner']);
             }
-
             $row = array_merge($row, $this->get_video_data($row['resource_id']));
-
-            $row['title'] = anchor('v/' . $row['resource_id'], '▶', 'target="_blank"') . $row['title'];
             $data['rows'][] = array(
                 'id' => $row['id'],
                 'cell' => $row
@@ -184,18 +170,8 @@ class play_report_model extends CI_Model {
         }
         $this->db->from($table_name);
     }
-
-    /**
-     * 
-     * @param type $page
-     * @param type $qtype
-     * @param type $query
-     * @param type $rp
-     * @param type $sortname
-     * @param type $sortorder
-     * @return array
-     */
-    public function share_find_all($page, $qtype, $query, $rp, $sortname, $sortorder) {
+    
+     public function share_find_all($page, $qtype, $query, $rp, $sortname, $sortorder) {
         $can_view_all = $this->auth->can_access($this->auth->permis_all_view_video_report);
         if ($qtype == 'custom') {
             parse_str($query, $query);
@@ -265,7 +241,6 @@ class play_report_model extends CI_Model {
                 $row['user_owner_fullname'] = $this->get_user_fullname($row['uid_owner']);
             }
             $row = array_merge($row, $this->get_video_data($row['resource_id']));
-            $row['title'] = anchor('v/' . $row['resource_id'], '▶', 'target="_blank"') . $row['title'];
             $data['rows'][] = array(
                 'id' => $row['id'],
                 'cell' => $row
@@ -298,7 +273,7 @@ class play_report_model extends CI_Model {
     private function share_find_all_where($table_name, $qtype, $query, $view_all) {
         if (!$view_all) {
             $this->db->where('uid_referer', $this->auth->uid());
-            $this->db->where('uid_referer !=', '`uid_owner`', FALSE);
+            $this->db->where('uid_referer !=','`uid_owner`',FALSE);
         }
         switch ($qtype) {
             case 'custom':

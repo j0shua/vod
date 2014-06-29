@@ -731,4 +731,15 @@ ON r_resource.resource_id=r_resource_video.resource_id
         return $a_resource_id_join;
     }
 
+    public function get_join_content_in_video($resource_id) {
+        $a_resource_id_join = array();
+        $this->db->where('resource_id_video', $resource_id);
+        $q_resource_join = $this->db->get('r_resource_video_join');
+        foreach ($q_resource_join->result_array() as $row_resource_join) {
+            $a_resource_id_join[] = $row_resource_join['resource_id'];
+        }
+
+        return $a_resource_id_join;
+    }
+
 }

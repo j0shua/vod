@@ -226,8 +226,7 @@ class taxonomy_manager extends CI_Controller {
             'title_parent' => $this->taxonomy_manager_model->get_title($tid_parent)
         );
         $this->template->script_var(array(
-            'iframe_video_manager_url' => site_url('resource/video_manager/iframe/data'),
-            'iframe_pvideo_manager_url' => site_url('resource/pvideo_manager/iframe/data')
+            'iframe_video_manager_url' => site_url('resource/video_manager/iframe/data')
         ));
 
         $this->template->application_script('resource/taxonomy_manager/sub_input_form.js');
@@ -260,8 +259,7 @@ class taxonomy_manager extends CI_Controller {
                 'title_parent' => $this->taxonomy_manager_model->get_title($tid_parent)
             );
             $this->template->script_var(array(
-                'iframe_video_manager_url' => site_url('resource/video_manager/iframe/data'),
-                'iframe_pvideo_manager_url' => site_url('resource/pvideo_manager/iframe/data')
+                'iframe_video_manager_url' => site_url('resource/video_manager/iframe/data')
             ));
             $this->template->application_script('resource/taxonomy_manager/sub_input_form.js');
             $this->template->load_typeonly();

@@ -6,6 +6,7 @@
 class resource_codec {
 
     function dycontent_encode($data) {
+
         return json_encode($data);
     }
 
@@ -33,18 +34,19 @@ class resource_codec {
                 if (isset($resource['resource_id'])) {
                     //$dycontent_data = $this->get_dycontent_data($resource['resource_id']);
                     if ($resource['content_type_id'] == 1) {
-                        $data['material_num']++;
+                        $data['material_num'] ++;
                     } else {
-                        $data['question_num']++;
+                        $data['question_num'] ++;
                     }
                     $sheet_set[] = $resource;
                 } else {
-                    $data['section_num']++;
+                    $data['section_num'] ++;
                     $sheet_set[] = $resource;
                 }
             }
         }
         $data['sheet_set'] = $sheet_set;
+
         return json_encode($data);
     }
 
@@ -61,7 +63,7 @@ class resource_codec {
             $data['section_num'] = 0;
             return $data;
         } else {
-
+          
             return json_decode($data, TRUE);
         }
     }

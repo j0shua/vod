@@ -7,9 +7,8 @@ class cron_model extends CI_Model {
     }
 
     function cron_day() {
-   
-        $q = $this->db->query("SELECT * FROM (`z_cron`) WHERE `cron_id` = 'day'");
-        
+        $this->db->where('cron_id', 'day');
+        $q = $this->db->get('z_cron');
         $r = $q->row_array();
         if (date($r['format_character']) != $r['value']) {
             $this->update_user_resource_count();

@@ -45,7 +45,6 @@ class doc_upload_model extends CI_Model {
             'title' => $data['title'],
             'desc' => $data['desc'],
             'create_time' => $time,
-            'update_time' => $time,
             'uid_owner' => $this->auth->uid(),
             'publish' => $data['publish'],
             'privacy' => $data['privacy'],

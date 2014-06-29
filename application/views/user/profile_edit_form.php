@@ -25,22 +25,64 @@
         <p>
             <label for="sex" >จังหวัด</label>
             <?php
-            echo form_dropdown('form_data[province_id]', $province_options, $form_data['province_id']);
+            echo form_dropdown('form_data[province_id]', $province_options, $form_data['province_id'], 'id="province_id"');
+            ?>
+        </p>
+
+        <p>
+            <label for="school_name" >โรงเรียน</label>
+            <?php if (FALSE) { ?>
+                <input type="text" id="school_name" name="form_data[school_name]" value="<?php echo $form_data['school_name']; ?>">
+                <?php
+            } else {
+                echo '<span id="school_name_wraper">';
+                echo form_dropdown('form_data[school_name]', $school_name_options, $form_data['school_name'], 'id="school_name"');
+                echo '</span>';
+                ?>
+                <script>
+                    var school_name = '';
+                    $(function() {
+                        school_name = $("#school_name").val();
+                        console.log(school_name);
+                        var is_change_school_name = false;
+                        function get_school_name() {
+                            var data = "province_id=" + $("#province_id").val();
+                            $.ajax({
+                                type: "POST",
+                                url: ajax_school_name_options_url,
+                                data: data,
+                                dataType: "json",
+                                async: false
+                            }).done(function(json) {
+                                console.log(school_name);
+                                $("#school_name_wraper").html(json.school_name_options);
+                                if (!is_change_school_name) {
+                                    $("#school_name").val(school_name);
+                                    is_change_school_name = true;
+                                }
+
+
+                            }).fail(function(jqXHR, textStatus) {
+                                alert("Request failed: " + textStatus + " " + jqXHR.status + " " + jqXHR.statusText);
+                                console.log(jqXHR);
+                            }).always(function() {
+
+                            });
+                        }
+                        $("#province_id").change(function() {
+                            get_school_name();
+                        }).change();
+                    });
+
+                </script>
+
+                <?php
+            }
             ?>
         </p>
         <p>
             <label for="birthday" >วันเกิด</label>
             <input id="birthday" type="text" name="form_data[birthday]" value="<?php echo $form_data['birthday']; ?>">
-        </p>
-        <p>
-            <label for="school_name" >โรงเรียน</label>
-            <?php if (TRUE) { ?>
-                <input type="text" id="school_name" name="form_data[school_name]" value="<?php echo $form_data['school_name']; ?>">
-                <?php
-            } else {
-                echo form_dropdown('form_data[school_name]', $school_name_options, $form_data['school_name'], 'id="school_name"');
-            }
-            ?>
         </p>
         <p>
             <?php if ($form_data['rid'] != 3) { ?>

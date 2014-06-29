@@ -45,10 +45,8 @@ class coupon_model extends CI_Model {
                     );
                 } else {
                     $money = $r_coupon['money'];
-                    $money_bonus = $r_coupon['money_bonus'];
-
-                    $this->db->set('money_bonus', 'money_bonus+' . $money_bonus, FALSE);
-                    $this->db->set('money', 'money+' . $money, FALSE);
+                    //$this->db->set('money_bonus', $money);
+                    $this->db->set('money_bonus', 'money_bonus+' . $money, FALSE);
                     $this->db->set('update_time', $this->time);
                     $this->db->where('uid', $uid);
                     $this->db->update('u_user_credit');
@@ -60,17 +58,15 @@ class coupon_model extends CI_Model {
                     //insert coupon log
                     $this->db->set('cid', $r_coupon['cid']);
                     $this->db->set('coupon_code', $coupon_code);
-                    $this->db->set('coupon_type', $r_coupon['coupon_type']);
                     $this->db->set('use_time', $this->time);
                     $this->db->set('money', $money);
-                    $this->db->set('money_bonus', $money_bonus);
                     $this->db->set('use_from', $use_from);
                     $this->db->set('uid', $uid);
                     $this->db->insert('b_coupon_log');
                     $clid = $this->db->insert_id();
                     $result = array(
                         'success' => TRUE,
-                        'message' => 'การเติมเงินจำนวน ' . ($money+$money_bonus) . ' บาท เสร็จสิ้น',
+                        'message' => 'การเติมเงินจำนวน ' . $money . ' บาท เสร็จสิ้น',
                         'cid' => $r_coupon['cid'],
                         'clid' => $clid
                     );
@@ -105,7 +101,7 @@ class coupon_model extends CI_Model {
         return substr($sum, -1);
     }
 
-    function gen_coupon_code($amount, $money, $money_bonus, $coupon_type, $active = 1) {
+    function gen_coupon_code($amount, $money, $coupon_type, $active = 1) {
 
         $this->db->select_max('running_number');
         $q = $this->db->get('b_coupon');
@@ -122,7 +118,6 @@ class coupon_model extends CI_Model {
                 'reuse_number' => 1,
                 'used_number' => 0,
                 'money' => $money,
-                'money_bonus' => $money_bonus,
                 'active' => $active,
                 'running_number' => $running_number,
                 'coupon_type' => $coupon_type,
@@ -183,18 +178,17 @@ class coupon_model extends CI_Model {
         }
 
         // set Summary row
-//        $summary_row = $this->get_list_field('b_coupon_fail');
-//        $summary_row['action'] = '';
-//        $summary_row['user_fullname'] = '';
-//        $summary_row['create_time']='';
-//
-//
-//
-//
-//        $data['rows'][] = array(
-//            'id' => '',
-//            'cell' => $summary_row
-//        );
+        $summary_row = $this->get_list_field('b_coupon_fail');
+        $summary_row['action'] = '';
+        $summary_row['user_fullname'] = '';
+
+
+
+
+        $data['rows'][] = array(
+            'id' => '',
+            'cell' => $summary_row
+        );
         return $data;
     }
 
@@ -317,7 +311,14 @@ class coupon_model extends CI_Model {
         return $row_all;
     }
 
-  
+    function save_coupon() {
+        
+    }
+
+    function save_book_coupon() {
+        
+    }
+
     function delete_coupon_fail($cfid) {
         $this->db->where('cfid', $cfid);
         $this->db->set('cancel_time', time());
@@ -353,77 +354,5 @@ class coupon_model extends CI_Model {
         return $q->result_array();
     }
 
-    /* ===============================================================
-     * for coupon used
-     * ===============================================================
-     */
-
-    public function find_all_coupon_used($page, $qtype, $query, $rp, $sortname, $sortorder) {
-        if ($qtype == 'custom') {
-            parse_str($query, $query);
-        }
-        //set now timestamp
-        //$time = time();
-        //initial data        
-        $data = array(
-            'rows' => array(),
-            'page' => $page,
-            'total' => 0
-        );
-        //make offset
-        $offset = (($page - 1) * $rp);
-        // Start Sql Query State for count row
-        $this->find_all_where_coupon_used('b_coupon_log', $qtype, $query);
-        // END Sql Query State
-        $total = $this->db->count_all_results();
-        // Start Sql Query State
-        $this->find_all_where_coupon_used('b_coupon_log', $qtype, $query);
-        // END Sql Query State
-        $this->db->limit($rp, $offset);
-        $this->db->order_by($sortname, $sortorder);
-        $result = $this->db->get();
-        $data['total'] = $total;
-        $user_data = array();
-        foreach ($result->result_array() as $row) {
-            if (!isset($user_data[$row['uid']])) {
-                $user_data[$row['uid']] = $this->auth->get_user_data($row['uid']);
-            }
-            $row['action'] = '';
-
-
-            $row['full_name_use'] = anchor('admin/users/detail/' . $row['uid'], $user_data[$row['uid']]['full_name'], 'target="_blank"');
-            if ($user_data[$row['uid']]['facebook_user_id'] != 0) {
-
-                $row['full_name_use'] .= anchor('https://www.facebook.com/' . $user_data[$row['uid']]['facebook_user_id'], 'FB', 'target="_blank"');
-            }
-            //$row['action'] = '<a href="' . site_url('admin/users/edit/' . $row['cid']) . '">ทำการเติมเงินให้</a>';
-            //$user_detail = $this->get_user_detail_data($row['uid']);
-            //$row = array_merge($row,$user_detail);
-            $row['use_time'] = thdate('d-M-Y H:i:s', $row['use_time']);
-            $data['rows'][] = array(
-                'id' => $row['cid'],
-                'cell' => $row
-            );
-        }
-        return $data;
-    }
-
-    private function find_all_where_coupon_used($table_name, $qtype, $query) {
-        switch ($qtype) {
-            case 'custom':
-                foreach ($query as $k => $v) {
-                    if ($v != '') {
-                        $this->db->where($k, $v);
-                    }
-                }
-                break;
-            default:
-                if ($query != '') {
-                    $this->db->where($qtype, $query);
-                }
-                break;
-        }
-        $this->db->from($table_name);
-    }
-
 }
+

@@ -4,8 +4,8 @@
  * Description of dycontent_model
  *
  * @author lojorider
- * @property resource_codec $resource_codec 
- *  
+ * @property resource_codec $resource_codec
+ * 
  */
 class dycontent_model extends CI_Model {
 
@@ -104,12 +104,13 @@ class dycontent_model extends CI_Model {
             }
             $row['action'] .= '<a href="' . site_url('resource/dycontent/edit/' . $row['resource_id']) . '">แก้ไข</a>';
             $row['action'] .= '<a href="' . site_url('resource/dycontent/delete/' . $row['resource_id']) . '">ลบ</a>';
-            //  $title = mb_substr($row['title'], 0, $this->title_str_limit, 'UTF-8');
+            $title = $row['title'];
+//            
+//            $title = mb_substr($row['title'], 0, $this->title_str_limit, 'UTF-8');
 //            if ($title != $row['title']) {
 //                $title = $title . '...';
 //            }
-            //$row['title'] = '<span title="ชื่อสื่อ : ' . $row['title'] . "\n" . 'คำอธิบาย : ' . $row['desc'] . '" >' . $title . '</span>';
-            $row['title'] = '<span title="ชื่อสื่อ : ' . $row['title'] . "\n" . 'คำอธิบาย : ' . $row['desc'] . '" >' . $row['title'] . '</span>';
+            $row['title'] = '<span title="ชื่อสื่อ : ' . $row['title'] . "\n" . 'คำอธิบาย : ' . $row['desc'] . '" >' . $title . '</span>';
             $row['title_play'] = '<a href="' . site_url('v/' . $row['resource_id']) . '" target="_blank">▶</a>' . $row['title'];
             $row['publish'] = $publish_options[$row['publish']];
             $row['privacy'] = $privacy_options[$row['privacy']];
@@ -118,13 +119,6 @@ class dycontent_model extends CI_Model {
             if ($row['content_type_id'] != 1) {
                 $row['second_dycontent_count'] = '<a title="เพิ่มโจทย์เทียบ" href="' . site_url('resource/dycontent/second_dycontent/' . $row['resource_id']) . '" target="_blank">' . $this->get_second_dycontent_count($row['resource_id']) . '</a>';
             }
-
-            if ($row['update_time'] == 0) {
-                $row['update_time'] = thdate('d-M-Y H:i น.', $row['create_time']);
-            } else {
-                $row['update_time'] = thdate('d-M-Y H:i น.', $row['update_time']);
-            }
-            $row['create_time'] = thdate('d-M-Y H:i น.', $row['create_time']);
             $data['rows'][] = array(
                 'id' => $row['resource_id'],
                 'cell' => $row
@@ -283,7 +277,7 @@ class dycontent_model extends CI_Model {
         $this->db->from($table_name);
     }
 
-    function get_dycontent_data($resource_id, $table = 'r_resource_dycontent') {
+    function get_dycontent_data($resource_id) {
         $content_type = $this->get_content_type_array();
         $render_type = $this->get_render_type_array();
         $this->db->select('data');
@@ -292,7 +286,7 @@ class dycontent_model extends CI_Model {
         $this->db->select('render_type_id');
         //$this->db->select('resource_id_parent');
         $this->db->where('resource_id', $resource_id);
-        $this->db->from($table);
+        $this->db->from('r_resource_dycontent');
         $q1 = $this->db->get();
         if ($q1->num_rows() > 0) {
             $row = $q1->row_array();

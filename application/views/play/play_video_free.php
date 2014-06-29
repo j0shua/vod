@@ -1,5 +1,5 @@
-<?php
-if (@$resource_code) {
+    <?php
+if ($resource_code) {
     echo '<h1 class="resource_code">รหัสวิดีโอ : ' . $resource_code . '</h1>';
 }
 ?>
@@ -14,9 +14,9 @@ if (@$resource_code) {
        id="streams">
     </a>
     <h1><?php echo $title; ?> ฟรี </h1>
-    <fb:like href="<?php echo @$facebook_like_url; ?>" send="true" width="880" show_faces="true"></fb:like>
+   <fb:like href="<?php echo $facebook_like_url; ?>" send="true" width="880" show_faces="true"></fb:like>
     <fb:comments href="<?php echo $facebook_url; ?>" num_posts="25" width="880"></fb:comments>
-
+    
 </div>
 
 <div class="grid_3 right_side">
@@ -40,27 +40,22 @@ if (@$resource_code) {
 
         </div>
     <?php } ?>
-    <?php
-    if (isset($resource_same_sub_taxonomy)) {
-        if ($resource_same_sub_taxonomy['total'] > 0) {
-            ?>
-            <h2 class="head1 no_buttom">วิดีโอในบทนี้</h2>
-            <div>
-                <ul class="same_taxonomy_list">
-                    <?php
-                    foreach ($resource_same_sub_taxonomy['rows'] as $v) {
-                        if ($v['current']) {
-                            echo '<li><span title="' . $v['desc'] . '">' . $v['title'] . '</span></li>';
-                        } else {
-                            echo '<li>' . anchor($v['url'], $v['title'], 'title="' . $v['desc'] . '"') . '</li>';
-                        }
+    <?php if ($resource_same_sub_taxonomy['total'] > 0) { ?>
+        <h2 class="head1 no_buttom">วิดีโอในบทนี้</h2>
+        <div>
+            <ul class="same_taxonomy_list">
+                <?php
+                foreach ($resource_same_sub_taxonomy['rows'] as $v) {
+                    if ($v['current']) {
+                        echo '<li><span title="' . $v['desc'] . '">' . $v['title'] . '</span></li>';
+                    } else {
+                        echo '<li>' . anchor($v['url'], $v['title'], 'title="' . $v['desc'] . '"') . '</li>';
                     }
-                    ?>
-                </ul>
-            </div>
-        <?php }
-    }
-    ?>
+                }
+                ?>
+            </ul>
+        </div>
+    <?php } ?>
 </div>
 <script>
     var netConnectionUrl = 'rtmpe://203.146.170.199:1936/educasy';

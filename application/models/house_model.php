@@ -128,7 +128,7 @@ class house_model extends CI_Model {
 
             if ($resource_data) {
                 $resource_set[] = $resource_data;
-                $sum_duration += $resource_data['duration'];
+                $sum_duration += @$resource_data['duration'];
             }
         }
         $result_set['resource_set'] = $resource_set;

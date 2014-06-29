@@ -19,8 +19,8 @@ class xelatex {
     private $clean_temp = FALSE; //ลบ ไฟล์ temp [ไฟล์สำหรับการ render]
     private $error_msg = '';
     private $debug = TRUE;
-    //private $xelatex_path = '/usr/local/texlive/2013/bin/x86_64-linux/xelatex';
-    private $xelatex_path = 'xelatex'; 
+    private $xelatex_path = '/usr/local/texlive/2013/bin/x86_64-linux/xelatex';
+    //private $xelatex_path = 'xelatex'; 
 
     public function __construct() {
         $this->CI = &get_instance();

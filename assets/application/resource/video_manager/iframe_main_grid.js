@@ -36,25 +36,23 @@ $(function() {
                 display: 'ค่าบริการ',
                 name: 'unit_price',
                 width: 45,
+                sortable: true,
                 align: 'left'
             }, {
                 display: 'ป้ายกำกับ',
                 name: 'tags',
                 width: 45,
-                sortable: true,
                 align: 'left'
             }, {
                 display: 'วิชา',
                 name: 'subject_title',
                 width: 60,
-                sortable: true,
                 align: 'left'
 
             }, {
                 display: 'บทเรียน',
                 name: 'chapter_title',
                 width: 60,
-                sortable: true,
                 align: 'left'
 
             }, {
@@ -62,7 +60,7 @@ $(function() {
                 name: 'file_size',
                 width: 50,
                 align: 'left',
-                hide: true 
+                hide: true
             }, {
                 display: 'เวลา',
                 name: 'duration',
@@ -78,11 +76,6 @@ $(function() {
                 display: 'สิทธิการใช้',
                 name: 'privacy',
                 width: 40,
-                align: 'left'
-            }, {
-                display: 'เวลาอัพโหลด',
-                name: 'create_time',
-                width: 40, 
                 align: 'left'
 
 

@@ -14,24 +14,8 @@ jQuery(function() {
                 width: 100,
                 sortable: true,
                 align: 'left'
-            }, {
-                display: 'อนุญาติให้ใช้',
-                name: 'reuse_number',
-                width: 60,
-                sortable: true,
-                align: 'left'
-            }, {
-                display: 'ใช้ไปแล้ว',
-                name: 'used_number',
-                width: 60,
-                sortable: true,
-                align: 'left'
-            }, {
-                display: 'ประเภท',
-                name: 'coupon_type',
-                width: 60,
-                sortable: true,
-                align: 'left'
+
+
             }, {
                 display: 'เวลาที่สร้าง',
                 name: 'create_time',

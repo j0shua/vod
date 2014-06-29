@@ -17,13 +17,13 @@ jQuery(function(){
         }, {
             display : 'ผู้ได้รับการเติม',
             name : 'fullname_use',
-            width : 130,
+            width : 95,
             sortable : true,
             align : 'left'
         }, {
             display : 'ผู้โอน',
             name : 'fullname_informant',
-            width : 130,
+            width : 95,
             sortable : true,
             align : 'left'
         }, {

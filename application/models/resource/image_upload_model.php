@@ -43,7 +43,7 @@ class image_upload_model extends CI_Model {
         if ($file_check[1] == 'pdf') { //ถ้าเป็น EPS
             $file_check[1] = 'png';
             $im = new Imagick();
-            $im->setResolution(150, 150);
+            $im->setResolution( 150, 150 );
             $im->readImage($input_full_file_path);
             $im->writeImage($file_check[0] . ".png");
             $input_full_file_path = implode('.', $file_check);

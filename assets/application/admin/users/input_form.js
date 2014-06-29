@@ -1,8 +1,4 @@
 $(function() {
-//    var old_active = $('#active').val();
-//    if (old_active === '1' || old_active === '0') {
-//        
-//    }
     $(".number-only").typeonly("0123456789");
     $('#birthday').datepicker({
         changeMonth: true,
@@ -10,14 +6,6 @@ $(function() {
         yearRange: "1953:-5Y"
     });
     $('#main-form').submit(function() {
-        var bvalid = true;
-        var error_message = [];
-//        if (old_active === '1' || old_active === '0') {
-//            if($('#active').val()==='2'){
-//                bvalid = false;
-//                error_message.push("ไม่สามารถ");
-//            }
-//        }
         return true;
     });
     $(function() {

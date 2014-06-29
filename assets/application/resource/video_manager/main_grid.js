@@ -43,20 +43,17 @@ $(function() {
                 display: 'ป้ายกำกับ',
                 name: 'tags',
                 width: 45,
-                sortable: true,
                 align: 'left'
             }, {
                 display: 'วิชา',
                 name: 'subject_title',
                 width: 60,
-                sortable: true,
                 align: 'left'
 
             }, {
                 display: 'บทเรียน',
                 name: 'chapter_title',
                 width: 60,
-                sortable: true,
                 align: 'left'
 
             }, {
@@ -81,19 +78,6 @@ $(function() {
                 name: 'privacy',
                 width: 35,
                 align: 'left'
-            }, {
-                display: 'เวลาอัพโหลด',
-                name: 'create_time',
-                width: 110,
-                align: 'left',
-                hide: true
-            }, {
-                display: 'แก้ไขล่าสุด',
-                name: 'update_time',
-                width: 110,
-                align: 'left',
-                hide: true
-
             }, {
                 display: '#เชื่อมสื่อ',
                 name: 'count_resource_join',

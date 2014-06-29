@@ -8,19 +8,7 @@ function mktimestamp($date_time) {
         $date_time .= ' 00:00';
     }
     list($date, $time) = explode(' ', $date_time);
-    //echo $date;
-
-    $tmp = explode('/', $date);
-    if (count($tmp) > 1) {
-        list($day, $month, $year) = explode('/', $date);
-    } else if (strlen($date) == 8) {
-        $tmp2 = str_split($date_time, 4);
-        $tmp3 = str_split($tmp2[1], 2);
-        $tmp4 = array($tmp3[1], $tmp3[0], $tmp2[0]);
-        //print_r($tmp4);
-        list($day, $month, $year) = $tmp4;
-    }
-
+    list($day, $month, $year) = explode('/', $date);
     $time = explode(':', $time);
     if (count($time) > 2) {
         list($hour, $minute, $second) = $time;
@@ -34,6 +22,8 @@ function mktimestamp($date_time) {
     $month = (int) ($month);
     $day = (int) ($day);
     $year = (int) ($year);
+//    echo $hour, '-', $minute, '-', $second, '-', $month, '-', $day, '-', $year;
+//    exit;
     return mktime($hour, $minute, $second, $month, $day, $year);
 }
 

@@ -54,7 +54,7 @@ class user extends CI_Controller {
     }
 
     public function do_login() {
-     
+
         $remember = ($this->input->post('remember_me')) ? TRUE : FALSE;
 
 
@@ -176,7 +176,8 @@ class user extends CI_Controller {
         );
         $this->template->script_var(
                 array(
-                    'ajax_school_name_url' => site_url('user/ajax_school_name')
+                    'ajax_school_name_url' => site_url('user/ajax_school_name'),
+                      'ajax_school_name_options_url' => site_url('user/ajax_school_name_options')
                 )
         );
         $this->template->load_typeonly();
@@ -392,7 +393,8 @@ class user extends CI_Controller {
             'sex_options' => $this->ddoption_model->get_sex_options(),
             'province_options' => $this->ddoption_model->get_province_options(),
             'degree_id_options' => $this->ddoption_model->get_degree_id_options(),
-            'school_name_options' => $this->ddoption_model->get_school_name_options(),
+            //'school_name_options' => $this->ddoption_model->get_school_name_options(),
+            'school_name_options' => array('' => ''),
             'password_length' => $this->user_model->password_length,
             'is_student' => $is_student,
             'username_field' => $this->username_field
@@ -402,7 +404,8 @@ class user extends CI_Controller {
         );
         $this->template->script_var(
                 array(
-                    'ajax_school_name_url' => site_url('user/ajax_school_name')
+                    'ajax_school_name_url' => site_url('user/ajax_school_name'),
+                    'ajax_school_name_options_url' => site_url('user/ajax_school_name_options')
                 )
         );
 
@@ -470,6 +473,12 @@ class user extends CI_Controller {
         } else {
             echo '[]';
         }
+    }
+
+    function ajax_school_name_options() {
+        $school_name_options = $this->ddoption_model->get_school_name_options($this->input->post('province_id'));
+        $a['school_name_options'] = form_dropdown('form_data[school_name]', $school_name_options, '', 'id="school_name"');
+        echo json_encode($a);
     }
 
     function do_upload_avatar() {

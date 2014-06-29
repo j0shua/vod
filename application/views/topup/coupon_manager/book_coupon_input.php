@@ -11,8 +11,7 @@
 
         <p>
             <label for="money">จำนวนเงิน </label>
-            <input type="text" id="money_bonus" name="data[money_bonus]" value="<?php echo $form_data['money_bonus']; ?>" >
-            <input type="hidden" id="money" name="data[money]" value="<?php echo $form_data['money']; ?>" >
+            <input type="text" id="money" name="data[money]" value="<?php echo $form_data['money']; ?>" >
         </p>
         <input type="submit" value="บันทึก" id="btnSubmit" class="btn-submit" >
 

@@ -235,8 +235,9 @@ class CI_User_agent {
 	 * @access	private
 	 * @return	bool
 	 */
-	private function _set_mobile()
+	private function  _set_mobile()
 	{
+            
 		if (is_array($this->mobiles) AND count($this->mobiles) > 0)
 		{
 			foreach ($this->mobiles as $key => $val)

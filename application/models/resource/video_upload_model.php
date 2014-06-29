@@ -50,7 +50,6 @@ class video_upload_model extends CI_Model {
             'unit_price' => $data['unit_price'],
             'desc' => $data['desc'],
             'create_time' => $this->time,
-            'update_time' => $this->time,
             'uid_owner' => $this->auth->uid(),
             'publish' => $data['publish'],
             'privacy' => $data['privacy'],
@@ -83,7 +82,7 @@ class video_upload_model extends CI_Model {
 
         if (file_exists($input_full_file_path)) {
             $this->phpavconv->encode($input_full_file_path, $output_full_file_path, $log_full_file_path);
-
+            
             return TRUE;
         }
         return FALSE;

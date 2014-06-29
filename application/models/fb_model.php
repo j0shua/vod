@@ -10,8 +10,6 @@ class fb_model extends CI_Model {
 
     var $start_money = 26;
     var $start_time_credit = 6000;
-    var $username_field;
-    var $site_id;
 
     /**
      * ตัวแปรต่าง สำหรับ facebook lib
@@ -30,7 +28,6 @@ class fb_model extends CI_Model {
     private $time;
     private $user_profile;
     private $is_init_fb = FALSE;
-    var $is_parent_site;
 
     /**
      * ตั้งค่าเริ่มต้น
@@ -38,7 +35,6 @@ class fb_model extends CI_Model {
     public function __construct() {
         parent::__construct();
         require APPPATH . 'third_party/facebook/facebook.php';
-
         $this->redirect_uri = site_url($this->uri->uri_string());
         $this->facebook_appId = $this->config->item('facebook_appId');
         $this->facebook_secret = $this->config->item('facebook_secret');
@@ -49,13 +45,6 @@ class fb_model extends CI_Model {
             'cookie' => true
         ));
         $this->time = time();
-        $this->username_field = $this->config->item('username_field');
-        $this->site_id = $this->config->item('site_id');
-        $this->is_parent_site = $this->config->item('is_parent_site');
-        if (!$this->is_parent_site) {
-            $this->db_parent = $this->load->database('parent', TRUE);
-            $this->db->close();
-        }
         /* ถ้าได้รับ code ให้ทำการ set AccessToken เพื่อสามารถเข้าใช้งานได้
          * ถ้าไม่ได้รับก็ไม่สามารุทำอะไรได้เลย
          */
@@ -133,15 +122,8 @@ class fb_model extends CI_Model {
 
     function register() {
         $user_profile = $this->get_user_profile();
-//        print_r($user_profile);
-//        exit();
-        $count = 0;
-        if (isset($user_profile['email'])) {
-            $this->db->where('email', $user_profile['email']);
-            $count = $this->db->count_all_results('u_user');
-        }
-
-        if ($count > 0) {
+        $this->db->where('email', $user_profile['email']);
+        if ($this->db->count_all_results('u_user') > 0) {
             $this->connect();
         } else {
 
@@ -151,15 +133,7 @@ class fb_model extends CI_Model {
             $data['rid'] = 2;
             $data['password'] = rand(111111, 999999);
             $active = 1;
-            if (isset($user_profile['email'])) {
-                $data['email'] = $user_profile['email'];
-            } else if (isset($user_profile['username'])) {
-                $data['email'] = $user_profile['username'];
-            } else {
-                return false;
-            }
-            $data['facebook_user_id'] = $user_profile['id'];
-
+            $data['email'] = $user_profile['email'];
             $data['first_name'] = $user_profile['first_name'];
             $data['last_name'] = $user_profile['last_name'];
             $data['sex'] = ($user_profile['gender'] == 'male') ? 'ชาย' : 'หญิง';
@@ -169,8 +143,8 @@ class fb_model extends CI_Model {
             $this->db->set('email', $data['email']);
             $this->db->set('active', $active);
             $this->db->set('register_time', $this->time);
-            $this->db->set('facebook_user_id', $data['facebook_user_id']);
-            $this->db->set('facebook_email', $data['email']);
+            $this->db->set('facebook_user_id', $user_profile['id']);
+            $this->db->set('facebook_email', $user_profile['email']);
             $this->db->insert('u_user');
             $uid = $this->db->insert_id();
 
@@ -194,29 +168,6 @@ class fb_model extends CI_Model {
             $this->db->set('update_time', time());
             $this->db->insert('u_user_credit');
 
-            if ($this->is_parent_site) {
-                $this->db->set('uid_site', $uid);
-                $this->db->set('site_id', $this->site_id);
-                $this->db->set('username', $data[$this->username_field]);
-                $this->db->insert('u_username_main');
-            } else {
-                $this->db_parent->close();
-                $this->db_parent->where('username', $data[$this->username_field]);
-                if ($this->db_parent->count_all_results('u_username_main') == 0) {
-                    $this->db_parent->set('uid_site', $uid);
-                    $this->db_parent->set('site_id', $this->site_id);
-                    $this->db_parent->set('username', $data[$this->username_field]);
-                    $this->db_parent->insert('u_username_main');
-                } else {
-                    $this->db_parent->set('uid_site', $uid);
-                    $this->db_parent->set('site_id', $this->site_id);
-                    $this->db_parent->where('username', $data[$this->username_field]);
-                    $this->db_parent->update('u_username_main');
-                }
-                $this->db->close();
-            }
-
-
             return TRUE;
         }
     }
@@ -224,20 +175,15 @@ class fb_model extends CI_Model {
     function connect() {
         $user_profile = $this->get_user_profile();
         if ($this->auth->is_login()) {
-            $uid = $this->auth->uid();
             $this->db->where('facebook_user_id', 0);
-            $this->db->where('uid', $uid);
+            $this->db->where('uid', $this->auth->uid());
             $q = $this->db->get('u_user');
             if ($q->num_rows() > 0) {
                 $this->db->set('facebook_user_id', $user_profile['id']);
                 $this->db->set('facebook_email', $user_profile['email']);
-                $this->db->where('uid', $uid);
+                //$this->db->set('money_bonus', 'money_bonus+' . $this->start_money, FALSE);
+                $this->db->where('uid', $this->auth->uid());
                 $this->db->update('u_user');
-
-                $this->db->where('uid', $uid);
-                $this->db->set('money_bonus', 'money_bonus+' . $this->start_money, FALSE);
-                $this->db->set('update_time', $this->time);
-                $this->db->update('u_user_credit');
                 return TRUE;
             } else {
                 return FALSE;
@@ -247,17 +193,11 @@ class fb_model extends CI_Model {
             $this->db->where('email', $user_profile['email']);
             $q = $this->db->get('u_user');
             if ($q->num_rows() > 0) {
-                $row = $q->row_array();
                 $this->db->set('facebook_user_id', $user_profile['id']);
                 $this->db->set('facebook_email', $user_profile['email']);
-
-                $this->db->where('uid', $row['uid']);
-                $this->db->update('u_user');
-
-                $this->db->where('uid', $row['uid']);
                 $this->db->set('money_bonus', 'money_bonus+' . $this->start_money, FALSE);
-                $this->db->set('update_time', $this->time);
-                $this->db->update('u_user_credit');
+                $this->db->where('email', $user_profile['email']);
+                $this->db->update('u_user');
                 return TRUE;
             } else {
                 return FALSE;

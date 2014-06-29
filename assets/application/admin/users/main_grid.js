@@ -61,7 +61,7 @@ jQuery(function() {
                 align: 'left'
             }, {
                 display: 'ใช้งาน',
-                name: 'active_text',
+                name: 'active',
                 width: 50,
                 align: 'left'
             }, {

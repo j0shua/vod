@@ -51,14 +51,13 @@ class search_user_model extends CI_Model {
                 'uid' => $row['uid'],
                 'cell' => $row
             );
-        }
+        } 
         return $data;
     }
 
     function where_find_all_teacher($table_name, $qtype, $query) {
-        //$this->db->where('rid', 3);
+        $this->db->where($table_name.'.uid !=', 1466);
         //$this->db->where('u_user.active', 1);
-
         switch ($qtype) {
             case 'custom':
                 foreach ($query as $k => $v) {

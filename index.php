@@ -1,13 +1,9 @@
 <?php
 
 if (current(explode('.', $_SERVER['HTTP_HOST'])) != 'www') {
-    if ($_SERVER['HTTP_HOST'] != '127.0.0.1') {
-        $url = 'http://' . 'www.' . $_SERVER['HTTP_HOST'] . $_SERVER["REQUEST_URI"];
-        header('Location: ' . $url);
-        exit();
-    }
+    
+   // header('Location: http://' . 'www.' . $_SERVER['HTTP_HOST'].$_SERVER["REQUEST_URI"]);
 }
-
 /*
  * ---------------------------------------------------------------
  * APPLICATION ENVIRONMENT

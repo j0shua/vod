@@ -199,7 +199,7 @@ class taxonomy_manager_model extends CI_Model {
 
 // SUB ==========================================================================
     public function sub_find_all($page, $qtype, $query, $rp, $sortname, $sortorder, $tid_parent) {
-        if ($sortname == 'title_play') {
+         if ($sortname == 'title_play') {
             $sortname = 'title';
         }
         $publish_options = $this->CI->ddoption_model->get_taxonomy_publish_options();
@@ -316,8 +316,7 @@ class taxonomy_manager_model extends CI_Model {
                 'data' => $data['data'],
                 'publish' => $data['publish'],
                 'uid_owner' => $this->auth->uid(),
-                'tid_parent' => $data['tid_parent'],
-                'tid_parent_site' => $data['tid_parent_site']
+                'tid_parent' => $data['tid_parent']
             );
             $this->db->set($set);
             if (isset($data['weight'])) {
@@ -333,8 +332,7 @@ class taxonomy_manager_model extends CI_Model {
                     'title' => $data['title'],
                     'desc' => $data['desc'],
                     'data' => $data['data'],
-                    'publish' => $data['publish'],
-                    'tid_parent_site' => $data['tid_parent_site']
+                    'publish' => $data['publish']
                 );
                 $this->db->set($set);
                 if (isset($data['weight'])) {

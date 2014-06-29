@@ -63,13 +63,6 @@ class image_manager_model extends CI_Model {
             $row['thumbnail'] = '<img width="100"  src="' . site_url('ztatic/resource_image/' . $row['resource_id']) . '" />';
             $row['title'] = '<span title="' . $row['title'] . "\n" . $row['desc'] . '">' . $row['title'] . '</span>';
             $row['title_play'] = '<a href="' . site_url('v/' . $row['resource_id']) . '" target="_blank">▶</a>' . $row['title'];
-            if ($row['update_time'] == 0) {
-                $row['update_time'] = thdate('d-M-Y H:i น.', $row['create_time']);
-            } else {
-                $row['update_time'] = thdate('d-M-Y H:i น.', $row['update_time']);
-            }
-            $row['create_time'] = thdate('d-M-Y H:i น.', $row['create_time']);
-
             $data['rows'][] = array(
                 'id' => $row['resource_id'],
                 'cell' => $row
@@ -140,23 +133,14 @@ class image_manager_model extends CI_Model {
         $this->db->where('resource_id', $resource_id);
         $this->db->from('r_resource_image');
         $q1 = $this->db->get();
-        $row = array();
-        if ($q1->num_rows() > 0) {
-            $row = $q1->row_array();
-            if ($row['file_ext'] == '') {
-                $row['file_ext'] = pathinfo($row['file_path'], PATHINFO_EXTENSION);
-                $this->db->set('file_ext', $row['file_ext']);
-                $this->db->where('resource_id', $resource_id);
-                $this->db->update('r_resource_image');
-            }
-            $row['h_file_size'] = byte_format($row['file_size']);
-        } else {
-            $data = $this->db->field_data('r_resource_image');
-            foreach ($data as $field) {
-                $row[$field->name] = $field->default;
-            }
+        $row = $q1->row_array();
+        if ($row['file_ext'] == '') {
+            $row['file_ext'] = pathinfo($row['file_path'], PATHINFO_EXTENSION);
+            $this->db->set('file_ext', $row['file_ext']);
+            $this->db->where('resource_id', $resource_id);
+            $this->db->update('r_resource_image');
         }
-
+        $row['h_file_size'] = byte_format($row['file_size']);
         return $row;
     }
 
@@ -270,8 +254,9 @@ class image_manager_model extends CI_Model {
             return '';
         }
     }
-
-    function delete($resource_id) {
+    
+    
+     function delete($resource_id) {
         if (is_array($resource_id)) {
             $this->db->where_in('resource_id', $resource_id);
         } else {
@@ -280,7 +265,7 @@ class image_manager_model extends CI_Model {
             }
             $this->db->where('resource_id', $resource_id);
         }
-
+        
         $this->db->select('file_path');
         $this->db->select('resource_id');
         $this->db->where('uid_owner', $this->auth->uid());
@@ -289,7 +274,7 @@ class image_manager_model extends CI_Model {
         if ($q->num_rows() > 0) {
             $this->db->trans_start();
             foreach ($q->result_array() as $row) {
-
+                
                 if (file_exists($this->full_image_dir . $row['file_path'])) {
                     if (@unlink($this->full_image_dir . $row['file_path'])) {
                         $this->db->where('resource_id', $row['resource_id']);
@@ -299,6 +284,7 @@ class image_manager_model extends CI_Model {
                         $this->db->where('resource_id', $row['resource_id']);
                         $this->db->where('uid_owner', $this->auth->uid());
                         $this->db->delete('r_resource_image');
+
                     }
                 } else {
 
@@ -309,33 +295,17 @@ class image_manager_model extends CI_Model {
                     $this->db->where('resource_id', $row['resource_id']);
                     $this->db->where('uid_owner', $this->auth->uid());
                     $this->db->delete('r_resource_image');
+
                 }
             }
             $this->db->trans_complete();
             return TRUE;
         } else {
-            if (is_array($resource_id)) {
-                $this->db->where_in('resource_id', $resource_id);
-            } else {
-                if ($resource_id == '') {
-                    return FALSE;
-                }
-                $this->db->where('resource_id', $resource_id);
-            }
-            $this->db->where('resource_type_id', 3);
-            $q = $this->db->get('r_resource');
-
-            if ($q->num_rows() > 0) {
-                foreach ($q->result_array() as $v) {
-                    $this->db->where('resource_id', $v['resource_id']);
-                    $this->db->where('uid_owner', $this->auth->uid());
-                    $this->db->delete('r_resource');
-                }
-                return TRUE;
-            }
             return FALSE;
         }
     }
+
+   
 
     function publish($resource_id, $publish) {
         $this->db->set('publish', $publish);

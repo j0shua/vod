@@ -32,20 +32,17 @@ $(function() {
                 display: 'ป้ายกำกับ',
                 name: 'tags',
                 width: 45,
-                sortable: true,
                 align: 'left'
             }, {
                 display: 'วิชา',
                 name: 'subject_title',
                 width: 60,
-                sortable: true,
                 align: 'left'
 
             }, {
                 display: 'บทเรียน',
                 name: 'chapter_title',
                 width: 60,
-                sortable: true,
                 align: 'left'
 
             }, {

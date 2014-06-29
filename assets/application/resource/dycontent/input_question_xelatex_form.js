@@ -253,7 +253,12 @@ $(function() {
 
         });
     }
-  
+    //    $("body").delegate(".btn-preview-me", "click", function() {
+    //        var data = $('.preview-me-'+$(this).attr('title')).serialize();
+    //        data = data+"&render_type_id="+$("#render_type_id").val();
+    //        data = data+"&preview_all=0";
+    //        preview(data);
+    //    });
     $("#dialog-add-question").dialog({
         autoOpen: false,
         modal: true,

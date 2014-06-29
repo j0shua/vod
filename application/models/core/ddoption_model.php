@@ -11,7 +11,7 @@ class ddoption_model extends CI_Model {
      * ค่า Default ควรเป็น 1
      * @return array option for form_dropdown
      */
-    function get_publish_options() { 
+    function get_publish_options() {
         $options = array(
             0 => 'ไม่ให้ใช้',
             1 => 'ใช้ได้'
@@ -83,12 +83,19 @@ class ddoption_model extends CI_Model {
         return $options;
     }
 
-    function get_school_name_options($default = '') {
-        $options = array(
-            '' => ''
-        );
-        //$this->db->where('is_active', 1);
-        $this->db->limit(100);
+    function get_school_name_options($province_id = '') {
+
+        if ($province_id != '') {
+            $options = array(
+                '' => ''
+            );
+            $this->db->where('province_id', $province_id);
+        } else {
+           
+            $this->db->limit(100);
+        }
+
+
         $query = $this->db->get('f_school');
         foreach ($query->result_array() as $v) {
             $options[$v['school_name']] = $v['school_name'];

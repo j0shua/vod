@@ -16,9 +16,6 @@
                     <ul class="simple">
                         <li><a href="<?php echo site_url('resource/dycontent'); ?>">โจทย์, เนื้อหา</a></li>
                         <li><a href="<?php echo site_url('resource/video_manager'); ?>">วิดีโอ</a></li>
-                          <?php if ($make_money) { ?>
-                            <li><a href="<?php echo site_url('resource/pvideo_manager'); ?>">วิดีโอ จาก prokru.com</a></li>
-                        <?php } ?>
                         <li><a href="<?php echo site_url('resource/doc_manager'); ?>">แฟ้มเอกสาร</a></li>
                         <li><a href="<?php echo site_url('resource/image_manager'); ?>">รูปภาพ</a></li>
                         <li><a href="<?php echo site_url('resource/flash_media_manager'); ?>">บทเรียนแฟลช</a></li>
@@ -99,7 +96,7 @@
     </li>
     <li class="menu"><a href="<?php echo site_url('user/logout'); ?>" class="drop">ลงชื่อออก</a></li>
 <?php } else { ?>
-    <?php if ($_SERVER['HTTP_HOST'] == 'www.educasy.com' || $_SERVER['HTTP_HOST'] == 'www.pec9.com') { ?>
+    <?php if ($_SERVER['HTTP_HOST'] == 'www.educasy.com') { ?>
         <li class="menu"><a href="<?php echo site_url('user/register'); ?>" class="drop">สมัครสมาชิก</a>
 
         </li>

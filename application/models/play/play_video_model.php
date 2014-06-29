@@ -19,28 +19,11 @@ class play_video_model extends CI_Model {
         $this->db->select('r_resource.unit_price');
         $this->db->select('r_resource.uid_owner');
         $this->db->select('r_resource.resource_type_id');
-        //$this->db->select('(select r_resource_video.file_path from r_resource_video where r_resource.resource_id = r_resource_video.resource_id) file_path', FALSE);
+        $this->db->select('(select r_resource_video.file_path from r_resource_video where r_resource.resource_id = r_resource_video.resource_id) file_path', FALSE);
         $this->db->where('r_resource.resource_id', $resource_id);
         $q1 = $this->db->get('r_resource');
         if ($q1->num_rows() > 0) {
             $row = $q1->row_array();
-            switch ($row['resource_type_id']) {
-                case 1:
-                    $this->db->where('resource_id', $row['resource_id']);
-                    $q_v = $this->db->get('r_resource_video');
-                    break;
-                case 6:
-                    $this->db->where('resource_id', $row['resource_id']);
-                    $q_v = $this->db->get('r_resource_video_parent');
-                    break;
-                default:
-                    break;
-            }
-            if ($q_v->num_rows() > 0) {
-                $row_v = $q_v->row_array();
-                $row['file_path'] = $row_v['file_path'];
-            }
-
             if ($row['unit_price'] == -1) {
                 $row['unit_price'] = $this->config->item('standard_unit_price');
             }
@@ -53,13 +36,6 @@ class play_video_model extends CI_Model {
         $this->clear_view_log();
         $data['view_log_id'] = $this->add_view_log($is_owner, $referer_url);
         $data['video_path'] = $this->get_video_path();
-        return $data;
-    }
-
-    function init_video_parent_play($is_owner = FALSE, $referer_url = FALSE) {
-        $this->clear_view_log();
-        $data['view_log_id'] = $this->add_view_log($is_owner, $referer_url);
-        $data['video_path'] = $this->get_video_parent_path();
         return $data;
     }
 
@@ -77,23 +53,6 @@ class play_video_model extends CI_Model {
                 return $file_path;
                 break;
         }
-    }
-
-    function get_video_parent_path() {
-        $file_path = $this->video_data['file_path'];
-        //$pathinfo = pathinfo($this->full_video_parent_dir . $file_path);
-        return 'flv:' . $file_path;
-//        switch ($pathinfo['extension']) {
-//            case 'mp4':
-//                return 'mp4:' . $file_path;
-//                break;
-//            case 'flv':
-//                return $file_path;
-//                break;
-//            default:
-//                return $file_path;
-//                break;
-//        }
     }
 
     function get_jw_video_path() {
@@ -129,7 +88,6 @@ class play_video_model extends CI_Model {
 
         $this->db->set('uid_referer', $uid_referer);
         $this->db->set('referer_url', $referer_url);
-        $this->db->set('resource_title', $this->video_data['title']);
         $this->db->set('resource_id', $this->video_data['resource_id']);
         $this->db->set('uid_owner', $this->video_data['uid_owner']);
         $this->db->set('uid_view', $this->auth->uid());

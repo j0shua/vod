@@ -81,18 +81,6 @@ jQuery(function() {
                 name: 'privacy',
                 width: 40,
                 align: 'left'
-                  }, {
-                display: 'เวลาสร้าง',
-                name: 'create_time',
-                width: 110,
-                align: 'left',
-                hide: true
-            }, {
-                display: 'แก้ไขล่าสุด',
-                name: 'update_time',
-                width: 110,
-                align: 'left',
-                hide: true
 
 
             }, {

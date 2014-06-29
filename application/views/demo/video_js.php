@@ -11,3 +11,6 @@
   <script>
     videojs.options.flash.swf = base_url("assets/video-js/video-js.swf");
   </script>
+  <style>
+     .vjs-control-content { width: 25px; right: -25px; display: none !important;}
+  </style>

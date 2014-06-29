@@ -58,8 +58,6 @@ class video_manager_model extends CI_Model {
 
         if ($sortname == 'title_desc' || $sortname == 'title_play') {
             $this->db->order_by('title', $sortorder);
-        } else {
-            $this->db->order_by($sortname, $sortorder);
         }
 
 
@@ -81,14 +79,6 @@ class video_manager_model extends CI_Model {
             $row = array_merge($row, $video_data);
             $row['file_size'] = byte_format($row['file_size']);
             $row['duration'] = gmdate("H:i:s", $row['duration']);
-
-            if ($row['update_time'] == 0) {
-                $row['update_time'] = thdate('d-M-Y H:i น.', $row['create_time']);
-            } else {
-                $row['update_time'] = thdate('d-M-Y H:i น.', $row['update_time']);
-            }
-            $row['create_time'] = thdate('d-M-Y H:i น.', $row['create_time']);
-
             $row['thumbnail'] = '<img height="48"  src="' . site_url('resource/ntimg/video_thumbnail/' . $row['resource_id']) . '" />';
             $row['title_desc'] = '<span title="' . $row['desc'] . '">' . $row['title'] . '</span>';
             $row['publish'] = $publish_options[$row['publish']];
@@ -127,9 +117,7 @@ class video_manager_model extends CI_Model {
                 'resource_code' => '',
                 'unit_price' => '',
                 'checkbox' => '',
-                'count_resource_join' => '',
-                'create_time' => '',
-                'update_time' => ''
+                'count_resource_join' => ''
             )
         );
         return $data;
@@ -162,8 +150,6 @@ class video_manager_model extends CI_Model {
 
         if ($sortname == 'title_desc' || $sortname == 'title_play') {
             $this->db->order_by('title', $sortorder);
-        } else {
-            $this->db->order_by($sortname, $sortorder);
         }
 
 
@@ -350,8 +336,7 @@ ON r_resource.resource_id=r_resource_video.resource_id
             'subject_title' => $subject_title,
             'chapter_id' => $data['chapter_id'],
             'chapter_title' => $chapter_title,
-            'sub_chapter_title' => $data['sub_chapter_title'],
-            'update_time' => $this->time
+            'sub_chapter_title' => $data['sub_chapter_title']
         );
         if ($data['resource_id'] != '') {
             $this->db->where('resource_id', $data['resource_id']);
@@ -399,7 +384,7 @@ ON r_resource.resource_id=r_resource_video.resource_id
         $this->db->where('chapter_id', $chapter_id);
         $q = $this->db->get('f_chapter');
         if ($q->num_rows() > 0) {
-            return $q->row()->chapter_title;
+            return $q->row()->chapter_title; 
         } else {
             return '';
         }
@@ -456,6 +441,8 @@ ON r_resource.resource_id=r_resource_video.resource_id
             return FALSE;
         }
     }
+
+
 
     function publish($resource_id, $publish) {
         $this->db->set('publish', $publish);

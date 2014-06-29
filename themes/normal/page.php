@@ -8,10 +8,10 @@
         <meta charset="utf-8">
         <title><?php echo $title; ?></title>
         <meta name="description" content="<?php echo $meta_description; ?>">
-        <meta name="author" content="lojorider"> 
+        <meta name="author" content="lojorider">
         <meta property="og:image" content="<?php echo $og_image; ?>"/>
         <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- Place favicon.ico in the root of your domain and delete these references -->
         <link rel="shortcut icon" href="<?php echo base_url('themes/normal/favicon.png'); ?>">
 

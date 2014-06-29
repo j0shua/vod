@@ -97,7 +97,8 @@
 
                                 if (!in_array($v2['resource_id_join'], $a_resource_join)) {
                                     if ($v2['resource_id_join']) {
-                                        echo '<span class="taxonomy_col_3">' . anchor('v/' . $v2['resource_id_join'], 'ดาวน์โหลดเอกสารย่อย', 'target="_blank" class="btn-a-small"') . '</span>';
+                                        //echo '<span class="taxonomy_col_3">' . anchor('v/' . $v2['resource_id_join'], 'ดาวน์โหลดเอกสารย่อย', 'target="_blank" class="btn-a-small"') . '</span>';
+                                        echo '<span class="taxonomy_col_3">' . anchor('ztatic/download_video_join_content?resource_id=' . $v2['resource_id'], 'ดาวน์โหลดเอกสารย่อย', 'target="_blank" class="btn-a-small"') . '</span>';
                                     }
                                 }
                                 $a_resource_join[$v2['resource_id']] = $v2['resource_id'];

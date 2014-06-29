@@ -17,7 +17,7 @@
         </p>
 <!--        <p>
             <label for="weight" >น้ำหนัก  </label>
-        <?php echo form_dropdown('data[weight]', $weight_options, $form_data['weight'], 'id="weight"'); ?>
+            <?php echo form_dropdown('data[weight]', $weight_options, $form_data['weight'], 'id="weight"'); ?>
         </p>-->
         <input type="submit" value="บันทึก" id="btnSubmit" class="btn-submit" >
 
@@ -26,13 +26,6 @@
     </form>
 
 </div>
-<style>
-    #main-form input[type=text],#main-form textarea{
-        width: 600px;
-
-    }
-
-</style>
 
 
 

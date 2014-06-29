@@ -3,7 +3,6 @@
 <div class="grid_12">
     <form class="normal-form" id="normalform" action="<?php echo $form_action; ?>" method="post" >
         <input id="cid" type="hidden" name="data[cid]" value="<?php echo $form_data['cid']; ?>">
-        <input id="coupon_type" type="hidden" name="data[coupon_type]" value="<?php echo $form_data['coupon_type']; ?>">
 
         <p>
             <label for="title">รหัสคูปอง </label>
@@ -12,7 +11,6 @@
         <p>
             <label for="money">จำนวนเงิน </label>
             <input type="text" id="money" name="data[money]" value="" >
-            <input type="hidden" id="money_bonus" name="data[money_bonus]" value="" >
         </p>
         <p>
             <label for="reuse_number">ครั้งที่ใช้ได้ </label>

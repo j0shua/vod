@@ -1,21 +1,17 @@
 <?php echo $main_side_menu; ?>
 <div class="grid_10">
     <h2 class="head1"><?php echo $title; ?></h2>
+
     <div>
-        <form class="" id="filter-form" action="<?php echo $filter_form_action; ?>" method="get" >
-            ตั้งแต่ <input class="filter_date" id="filter_date_from" type="text" disabled name="from" value="<?php echo $from; ?>">
-            ถึง <input  class="filter_date" id="filter_date_to" type="text" name="to" value="<?php echo $to; ?>">
-            <input type="submit" id="btn_filter" value="ปรับปรุงช่วงเวลาเบิกเงิน" class="btn-a-small"> 
-        </form>
+
+        ตั้งแต่ <input id="query-date-from" type="text" name="from" value="<?php echo date('d/m/Y', $date_from_stamp); ?>">
+        ถึง <input id="query-date-to" type="text" name="to" value="<?php echo date('d/m/Y', $date_to_stamp); ?>">
+        <input type="button" id="btn_search" value="ปรับปรุง" class="btn-a-small"> 
     </div>
-    <div style="margin-top: 5px; margin-bottom: 5px;" class="messages warning">
-        การเบิกเงินมีค่าธรรมเนียม <?php echo $withdraw_fee; ?> บาท ต่อครั้ง ขั่นตำในการเบิกเงินคือ 100 บาท
+    <div></div>
+    <div style="margin-top: 5px;" class="messages warning">
+        *** ค่าตอบแทนของท่านจะคิดจาก วิดีโอของท่านเอง และ วิดีโอที่ท่านำไปใช้สอน
     </div>
-    <?php if ($from == $to) { ?>
-        <div style="margin-top: 5px; margin-bottom: 5px;" class="messages error">
-            <span>ท่านยังไม่สามารถทำการเบิกเงินได้เนื่องจาก ช่วงเวลาในการคำนวณรายได้ไม่เพียงพอ</span>
-        </div>
-    <?php } ?>
     <div style="margin-top: 5px;margin-bottom: 5px;">
         <table class="data">
             <thead>
@@ -36,35 +32,31 @@
 
             </thead>
             <tbody>
-                <?php foreach ($earnings_data as $r) { ?>
-                    <tr>
-                        <td><?php echo $r['title']; ?></td>
-                        <td><?php echo $r['money']; ?></td>
-                        <td><?php echo $r['percent_earnings']; ?></td>
-                        <td><?php echo $r['earnings_money']; ?></td>
-                    </tr>
-                <?php } ?>
-
+                <tr>
+                    <td>วิดีโอของตนเอง</td>
+                    <td><?php echo number_format(200, 2) ?></td>
+                    <td>30</td>
+                    <td><?php echo number_format(60, 2) ?></td>
+                </tr>
+                <tr>
+                    <td>วิดีโอที่ตนนำเสนอ</td>
+                    <td><?php echo number_format(200, 2) ?></td>
+                    <td>10</td>
+                    <td><?php echo number_format(20, 2) ?></td>
+                </tr>
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3" style="text-align: right;font-weight: bold;">รวม</td>
+                    <td colspan="3" style="text-align: right;">รวม</td>
 
-                    <td><?php echo $sum_earnings; ?></td>
+                    <td>20</td>
                 </tr>
             </tfoot>
         </table>
     </div>
-
     <div>
-        <form  class="normal-form"   id="withdraw-form" action="<?php echo $withdraw_form_action; ?>" method="get" >
-            <input id="withdraw-date-from" type="hidden" name="from" value="<?php echo $from; ?>">
-            <input id="withdraw-date-to" type="hidden" name="to" value="<?php echo $to; ?>">
-            <?php if ($from != $to) { ?>
-                <input type="submit" id="btn_withdraw" value="ทำการเบิกเงิน" class="btn-a"> 
-            <?php } ?>
-
-        </form>
+        <a href="<?php echo $withdraw_url; ?>" class="btn-a">ถอนเงิน</a>
+        <a href="<?php echo $withdraw_history;  ?>" class="btn-a">ประวัติถอนเงิน</a>
     </div>
 
 </div>

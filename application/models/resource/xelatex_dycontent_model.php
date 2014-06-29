@@ -10,7 +10,7 @@
 class xelatex_dycontent_model extends CI_Model {
 
     var $formula = array();
-    var $preable, $full_image_dir, $xelatex_temp_folder;
+    var $preable, $full_image_dir, $xelatex_temp_path;
     var $prefix_file = 'dycontent_';
     var $prefix_file_no_solve = 'dycontent_no_solve_';
     var $itemize_char;
@@ -21,7 +21,7 @@ class xelatex_dycontent_model extends CI_Model {
         parent::__construct();
         $this->full_image_dir = $this->config->item('full_image_dir');
         $this->load->library('xelatex');
-        $this->xelatex_temp_folder = $this->config->item('temp_folder') . '/xelatex_temp/';
+        $this->xelatex_temp_path = FCPATH . 'temp/xelatex_temp/';
         $this->itemize_char = $this->config->item('itemize_char');
     }
 
@@ -87,9 +87,9 @@ class xelatex_dycontent_model extends CI_Model {
         $this->xelatex->formula(implode("\n", $formula));
         if ($target_path == '') {
             if ($get_pdf) {
-                $target_path = $this->xelatex_temp_folder . $this->prefix_file . md5($this->xelatex->formula()) . '.pdf';
+                $target_path = $this->xelatex_temp_path . $this->prefix_file . md5($this->xelatex->formula()) . '.pdf';
             } else {
-                $target_path = $this->xelatex_temp_folder . $this->prefix_file . md5($this->xelatex->formula()) . '.png';
+                $target_path = $this->xelatex_temp_path . $this->prefix_file . md5($this->xelatex->formula()) . '.png';
             }
         }
         $result = $this->xelatex->render($target_path, $replace_file);

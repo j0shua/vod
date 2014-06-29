@@ -9,16 +9,12 @@
 class page extends CI_Controller {
 
     var $make_money;
-    var $username_field;
-    var $site_name;
 
     public function __construct() {
         parent::__construct();
         $this->load->model('affiliate/affiliate_model');
         $this->load->library('user_agent');
         $this->make_money = $this->config->item('make_money');
-        $this->username_field = $this->config->item('username_field');
-        $this->site_name = $this->config->item('site_name');
     }
 
     /**
@@ -33,65 +29,15 @@ class page extends CI_Controller {
                 break;
             case 'www.prokru.com':
                 //$this->index_krueonline();
-                $this->index_prokru_v2();
+                $this->index_3p();
 
                 break;
-            case '127.0.0.1':
-                //$this->index_krueonline();
-                $this->index_educasy_v2();
-                //$this->index_educasy();
-
-                break;
-
             default:
                 //$this->index_educasy();
                 //$this->index_krueonline();
-                $this->index_pec9_v2();
-                //$this->index_prokru_v2();
+                $this->index_3p();
                 break;
         }
-    }
-
-    function index_pec9_v2() {
-
-        $flash_download_url = FALSE;
-        $acrobat_url = 'http://get.adobe.com/reader/';
-        if ($this->agent->is_android()) {
-            $acrobat_url = 'https://play.google.com/store/apps/details?id=com.adobe.reader&hl=th';
-            if ($this->agent->android_version() == '4.0.4') {
-                $flash_download_url = base_url('files/flash_player_ics.apk');
-            } else if ($this->agent->android_version() > '4.0.4') {
-                $flash_download_url = base_url('files/flash_player_jb.apk');
-            } else {
-                $flash_download_url = base_url('files/flash_player_gb.apk');
-            }
-        }
-        $download_browser = TRUE;
-//        if ($this->agent->browser() == 'Firefox' || $this->agent->browser() == 'Chrome') {
-//                        $download_browser = FALSE;
-//        }
-        $data = array(
-            'flash_download_url' => $flash_download_url,
-            'is_android' => $this->agent->is_android(),
-            'acrobat_url' => $acrobat_url,
-            'download_browser' => $download_browser,
-            'seach_teacher_form_action' => site_url('search/teacher'),
-            'is_connect_facebook' => $this->auth->is_connect_facebook(),
-        );
-
-        //if ($this->make_money) {
-        $this->template->write_view('page/home_page_pec9_v2', $data);
-        //  } else {
-        //     $this->template->write_view('page/home_page_freesys', $data);
-        // }
-        $script_var = array(
-            'uid' => $this->auth->uid(),
-            'ajax_fb_like_url' => site_url('fb/like/')
-        );
-        $this->template->script_var($script_var);
-        //$this->template->write_view('page/home_page_demo', $data);
-        $this->template->load_coin_slider();
-        $this->template->render();
     }
 
     function index_educasy() {
@@ -120,98 +66,12 @@ class page extends CI_Controller {
             'seach_teacher_form_action' => site_url('search/teacher'),
             'is_connect_facebook' => $this->auth->is_connect_facebook(),
         );
-
+        
         //if ($this->make_money) {
-        $this->template->write_view('page/home_page_educasy', $data);
-        //  } else {
-        //     $this->template->write_view('page/home_page_freesys', $data);
-        // }
-        $script_var = array(
-            'uid' => $this->auth->uid(),
-            'ajax_fb_like_url' => site_url('fb/like/')
-        );
-        $this->template->script_var($script_var);
-        //$this->template->write_view('page/home_page_demo', $data);
-        $this->template->load_coin_slider();
-        $this->template->render();
-    }
-
-    function index_educasy_v2() {
-
-        $flash_download_url = FALSE;
-        $acrobat_url = 'http://get.adobe.com/reader/';
-        if ($this->agent->is_android()) {
-            $acrobat_url = 'https://play.google.com/store/apps/details?id=com.adobe.reader&hl=th';
-            if ($this->agent->android_version() == '4.0.4') {
-                $flash_download_url = base_url('files/flash_player_ics.apk');
-            } else if ($this->agent->android_version() > '4.0.4') {
-                $flash_download_url = base_url('files/flash_player_jb.apk');
-            } else {
-                $flash_download_url = base_url('files/flash_player_gb.apk');
-            }
-        }
-        $download_browser = TRUE;
-//        if ($this->agent->browser() == 'Firefox' || $this->agent->browser() == 'Chrome') {
-//                        $download_browser = FALSE;
-//        }
-        $data = array(
-            'flash_download_url' => $flash_download_url,
-            'is_android' => $this->agent->is_android(),
-            'acrobat_url' => $acrobat_url,
-            'download_browser' => $download_browser,
-            'seach_teacher_form_action' => site_url('search/teacher'),
-            'is_connect_facebook' => $this->auth->is_connect_facebook(),
-        );
-
-        //if ($this->make_money) {
-        $this->template->write_view('page/home_page_educasy_v2', $data);
-        //  } else {
-        //     $this->template->write_view('page/home_page_freesys', $data);
-        // }
-        $script_var = array(
-            'uid' => $this->auth->uid(),
-            'ajax_fb_like_url' => site_url('fb/like/')
-        );
-        $this->template->script_var($script_var);
-        //$this->template->write_view('page/home_page_demo', $data);
-        $this->template->load_coin_slider();
-        $this->template->temmplate_name('educasy_v2');
-        $this->template->render();
-    }
-
-    function index_prokru_v2() {
-
-        $flash_download_url = FALSE;
-        $acrobat_url = 'http://get.adobe.com/reader/';
-        if ($this->agent->is_android()) {
-            $acrobat_url = 'https://play.google.com/store/apps/details?id=com.adobe.reader&hl=th';
-            if ($this->agent->android_version() == '4.0.4') {
-                $flash_download_url = base_url('files/flash_player_ics.apk');
-            } else if ($this->agent->android_version() > '4.0.4') {
-                $flash_download_url = base_url('files/flash_player_jb.apk');
-            } else {
-                $flash_download_url = base_url('files/flash_player_gb.apk');
-            }
-        }
-        $download_browser = TRUE;
-//        if ($this->agent->browser() == 'Firefox' || $this->agent->browser() == 'Chrome') {
-//                        $download_browser = FALSE;
-//        }
-        $data = array(
-            'flash_download_url' => $flash_download_url,
-            'is_android' => $this->agent->is_android(),
-            'acrobat_url' => $acrobat_url,
-            'download_browser' => $download_browser,
-            'seach_teacher_form_action' => site_url('search/teacher'),
-            'is_connect_facebook' => $this->auth->is_connect_facebook(),
-            'username_field' => $this->username_field
-        );
-
-        //if ($this->make_money) {
-        $this->template->write_view('page/home_page_prokru_v2', $data);
-        //  } else {
-        //     $this->template->write_view('page/home_page_freesys', $data);
-        // }
+            $this->template->write_view('page/home_page_educasy', $data);
+      //  } else {
+       //     $this->template->write_view('page/home_page_freesys', $data);
+       // }
         $script_var = array(
             'uid' => $this->auth->uid(),
             'ajax_fb_like_url' => site_url('fb/like/')
@@ -393,10 +253,7 @@ class page extends CI_Controller {
      * เติมเงิน true
      */
     function truemoney_topup() {
-        $data['true_gid'] = $this->config->item('true_gid'); 
-        $data['username_field'] = $this->username_field;
-        $data['user_data'] = $this->auth->get_user_data();
-        $this->template->write_view('page/truemoney_topup', $data);
+        $this->template->write_view('page/truemoney_topup');
         $this->template->render();
     }
 

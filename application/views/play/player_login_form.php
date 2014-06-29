@@ -4,11 +4,9 @@
     <form class="normal-form" method="post" action="<?php echo $form_action; ?>" id="main-form" >
         <input type="hidden"  name="referer_url" value="<?php echo $referer_url; ?>">
         <p>
-            <?php if ($username_field == 'username') { ?>
-                <input type="text" id="username" name="username" value="" placeholder="ยูสเซอร์เนม">
-            <?php } else { ?>
-                <input type="text" id="username" name="username" value="" placeholder="อีเมล์">
-            <?php } ?>
+
+            <input type="text" id="username" name="username" value="" placeholder="อีเมล์">
+
         </p>
 
         <p>

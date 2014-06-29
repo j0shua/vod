@@ -27,6 +27,7 @@ class pvideo_manager_model extends CI_Model {
         $this->time = time();
 
         $this->db_parent = $this->load->database('parent', TRUE);
+        
     }
 
     public function set_resource_type_id($resource_type_id) {
@@ -62,9 +63,6 @@ class pvideo_manager_model extends CI_Model {
 
         if ($sortname == 'title_desc' || $sortname == 'title_play') {
             $this->db->order_by('title', $sortorder);
-        }else{
-            $this->db->order_by($sortname, $sortorder);
-            
         }
 
 
@@ -80,8 +78,8 @@ class pvideo_manager_model extends CI_Model {
             } else {
                 $row['action'] .= '<a href="' . site_url('resource/resource_join/video_join/' . $row['resource_id']) . '">เพิ่มการเชื่อมสื่อ</a>';
             }
-            $row['action'] .= '<a href="' . site_url('resource/pvideo_manager/edit/' . $row['resource_id']) . '" target="_blank">แก้ไข</a>';
-//            $row['action'] .= '<a href="' . site_url('resource/pvideo_manager/delete/' . $row['resource_id']) . '">ลบ</a>';
+            $row['action'] .= '<a href="' . site_url('resource/video_manager/edit/' . $row['resource_id']) . '" target="_blank">แก้ไข</a>';
+            $row['action'] .= '<a href="' . site_url('resource/video_manager/delete/' . $row['resource_id']) . '">ลบ</a>';
             $video_data = $this->get_resource_data($row['resource_id']);
             $row = array_merge($row, $video_data);
             $row['file_size'] = byte_format($row['file_size']);
@@ -129,11 +127,10 @@ class pvideo_manager_model extends CI_Model {
         );
         return $data;
     }
-
-    public function iframe_find_all($page, $qtype, $query, $rp, $sortname, $sortorder) {
+     public function iframe_find_all($page, $qtype, $query, $rp, $sortname, $sortorder) {
         $publish_options = $this->CI->ddoption_model->get_publish_options();
         $privacy_options = $this->CI->ddoption_model->get_privacy_options();
-
+        
         if ($qtype == 'custom') {
             parse_str($query, $query);
         }
@@ -157,9 +154,6 @@ class pvideo_manager_model extends CI_Model {
 
         if ($sortname == 'title_desc' || $sortname == 'title_play') {
             $this->db->order_by('title', $sortorder);
-        }else{
-            $this->db->order_by($sortname, $sortorder);
-            
         }
 
 
@@ -170,7 +164,7 @@ class pvideo_manager_model extends CI_Model {
             $row['checkbox'] = '<input type = "checkbox" name = "cb_resource_id[]" value = "' . $row['resource_id'] . '" />';
             $row['action'] = '<a href="' . site_url('resource/pvideo_manager/edit/' . $row['resource_id']) . '" target="_blank">แก้ไข</a>';
             $row['action'] .= '<a href="' . site_url('v/' . $row['resource_id']) . '" target="_blank">เล่น</a>';
-            //$row['action'] .= '<a href="' . site_url('resource/pvideo_manager/edit/' . $row['resource_id']) . '">วางขาย</a>';
+            //$row['action'] .= '<a href="' . site_url('resource/video_manager/edit/' . $row['resource_id']) . '">วางขาย</a>';
             //$row['file_size'] = $this->get_file_size($row['resource_id'], TRUE);
             $video_data = $this->get_resource_data($row['resource_id']);
             $row = array_merge($row, $video_data);
@@ -219,7 +213,7 @@ class pvideo_manager_model extends CI_Model {
 
     public function get_video_data($resource_id) {
         $this->db->close();
-
+        
         $this->db->select('file_size_org,file_size,duration');
         $this->db->where('resource_id', $resource_id);
         $this->db->from('r_resource_video_parent');
@@ -317,8 +311,9 @@ ON r_resource.resource_id=r_resource_video_parent.resource_id
         return $row;
     }
 
+   
+
     function get_subject_title($subj_id) {
-        $this->db->close();
         $this->db->select('title');
         $this->db->where('subj_id', $subj_id);
         $q = $this->db->get('f_subject');
@@ -330,7 +325,6 @@ ON r_resource.resource_id=r_resource_video_parent.resource_id
     }
 
     function get_chapter_title($chapter_id) {
-        $this->db->close();
         $this->db->select('chapter_title');
         $this->db->where('chapter_id', $chapter_id);
         $q = $this->db->get('f_chapter');
@@ -341,6 +335,7 @@ ON r_resource.resource_id=r_resource_video_parent.resource_id
         }
     }
 
+    
     function publish($resource_id, $publish) {
         $this->db->close();
         $this->db->set('publish', $publish);
@@ -452,8 +447,7 @@ ON r_resource.resource_id=r_resource_video_parent.resource_id
             }
         }
     }
-
-    function save($data) {
+      function save($data) {
         $subject_title = $this->get_subject_title($data['subj_id']);
         $chapter_title = $this->get_chapter_title($data['chapter_id']);
         $set = array(
@@ -473,35 +467,34 @@ ON r_resource.resource_id=r_resource_video_parent.resource_id
             'chapter_title' => $chapter_title,
             'sub_chapter_title' => $data['sub_chapter_title']
         );
-//        if ($data['resource_id'] != '') {
-//            $this->db->where('resource_id', $data['resource_id']);
-//            $query = $this->db->get('r_resource');
-//            if ($query->num_rows() > 0) {
-        $this->db->close();
-        $this->db->set($set);
-        $this->db->where('resource_id', $data['resource_id']);
-        $this->db->update('r_resource');
-        return TRUE;
-//            } 
-//        } else { //ต้องเป็นเพิ่ม file_path เคุณั้น
-//            if (isset($data['file_path'])) { // ถ้าส่ง file path มา
-//                $this->db->trans_start();
-//                $this->db->set($set);
-//                $this->db->set('resource_type_id', $this->resource_type_id);
-//                $this->db->set('uid_owner', $this->auth->uid());
-//                $this->db->insert('r_resource');
-//                $resource_id = $this->db->insert_id();
-//                $this->db->set('resource_id', $resource_id);
-//                
-//                $this->db->set('encode_complete', 1);
-//                $this->db->set('create_time', $this->time);
-//                $this->db->set('duration', $data['duration']);
-//                $this->db->insert('r_resource_video_parent');
-//                $this->db->trans_complete();
-//                return TRUE;
-//            }return FALSE;
-//        }
-        //return FALSE;
+        if ($data['resource_id'] != '') {
+            $this->db->where('resource_id', $data['resource_id']);
+            $query = $this->db->get('r_resource');
+            if ($query->num_rows() > 0) {
+                $this->db->set($set);
+                $this->db->where('resource_id', $data['resource_id']);
+                $this->db->update('r_resource');
+                return TRUE;
+            }
+        } else { //ต้องเป็นเพิ่ม file_path เคุณั้น
+            if (isset($data['file_path'])) { // ถ้าส่ง file path มา
+                $this->db->trans_start();
+                $this->db->set($set);
+                $this->db->set('resource_type_id', $this->resource_type_id);
+                $this->db->set('uid_owner', $this->auth->uid());
+                $this->db->insert('r_resource');
+                $resource_id = $this->db->insert_id();
+                $this->db->set('resource_id', $resource_id);
+                $this->db->set('file_path', $data['file_path']);
+                $this->db->set('encode_complete', 1);
+                $this->db->set('create_time', $this->time);
+                $this->db->set('duration', $data['duration']);
+                $this->db->insert('r_resource_video');
+                $this->db->trans_complete();
+                return TRUE;
+            }return FALSE;
+        }
+        return FALSE;
     }
 
 }

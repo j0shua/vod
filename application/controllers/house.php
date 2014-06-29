@@ -7,13 +7,10 @@
  */
 class house extends CI_Controller {
 
-    var $parent_site_url;
-
     public function __construct() {
         parent::__construct();
         $this->load->model('house_model');
         $this->load->model('study/course_model');
-        $this->parent_site_url = $this->config->item('parent_site_url');
     }
 
     function u($uid = '', $tid = '') {
@@ -28,7 +25,6 @@ class house extends CI_Controller {
         } else {
             $this->house_model->init($uid, $tid);
             $data['uid'] = $uid;
-            $data['parent_site_url'] = $this->parent_site_url;
             $data['tid'] = $this->house_model->get_tid();
             $data['user'] = $this->house_model->get_user();
             $data['taxonomy_title'] = $this->house_model->get_taxonomy_parent_title();

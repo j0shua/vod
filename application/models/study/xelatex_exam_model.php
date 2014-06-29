@@ -10,7 +10,7 @@
 class xelatex_exam_model extends CI_Model {
 
     var $formula = array();
-    var $preable, $full_image_dir, $xelatex_temp_folder;
+    var $preable, $full_image_dir, $xelatex_temp_path;
     var $prefix_question_file = 'exam_';
     var $prefix_question_solve_file = 'exam_solve_';
     var $have_solve = FALSE;
@@ -21,7 +21,7 @@ class xelatex_exam_model extends CI_Model {
         parent::__construct();
         $this->full_image_dir = $this->config->item('full_image_dir');
         $this->load->library('xelatex');
-        $this->xelatex_temp_folder = $this->config->item('temp_folder') . '/xelatex_temp/';
+        $this->xelatex_temp_path = FCPATH . 'temp/xelatex_temp/';
         $this->itemize_char = $this->config->item('itemize_char');
     }
 
@@ -80,15 +80,15 @@ class xelatex_exam_model extends CI_Model {
         if ($target_path == '') {
             if ($this->have_solve) {
                 if ($get_pdf) {
-                    $target_path = $this->xelatex_temp_folder . $this->prefix_question_solve_file . md5($this->xelatex->formula()) . '.pdf';
+                    $target_path = $this->xelatex_temp_path . $this->prefix_question_solve_file . md5($this->xelatex->formula()) . '.pdf';
                 } else {
-                    $target_path = $this->xelatex_temp_folder . $this->prefix_question_solve_file . md5($this->xelatex->formula()) . '.png';
+                    $target_path = $this->xelatex_temp_path . $this->prefix_question_solve_file . md5($this->xelatex->formula()) . '.png';
                 }
             } else {
                 if ($get_pdf) {
-                    $target_path = $this->xelatex_temp_folder . $this->prefix_question_file . md5($this->xelatex->formula()) . '.pdf';
+                    $target_path = $this->xelatex_temp_path . $this->prefix_question_file . md5($this->xelatex->formula()) . '.pdf';
                 } else {
-                    $target_path = $this->xelatex_temp_folder . $this->prefix_question_file . md5($this->xelatex->formula()) . '.png';
+                    $target_path = $this->xelatex_temp_path . $this->prefix_question_file . md5($this->xelatex->formula()) . '.png';
                 }
             }
         }
@@ -148,7 +148,7 @@ class xelatex_exam_model extends CI_Model {
     }
 
     private function make_mc($data) {
-
+        
         $this->set_formula($data['question']);
         $this->set_formula($this->make_itemize($data['choices']));
         if ($this->have_solve) {

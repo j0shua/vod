@@ -42,7 +42,6 @@ class video_upload extends CI_Controller {
             $this->check_permission();
             $this->template->load_fileuploader();
             $this->template->load_showloading();
-            $this->template->load_jquery_colorbox(); 
             $this->template->application_script('resource/video_upload/upload_form.js');
             $data = array(
                 //ทั่วไป
