@@ -20,7 +20,7 @@ class demo extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->backup_sql();
+       // $this->backup_sql();
         //exec("Backup");
     }
 
@@ -1254,6 +1254,9 @@ Here is how much of TeX's memory you used:
         echo $data['from']->format('d/m/Y');
         echo '----->';
         echo $data['to']->format('d/m/Y');
+    }
+    function gen_password($password=12345){
+       echo  $this->auth->encode_password($password);
     }
 
 }

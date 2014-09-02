@@ -24,7 +24,6 @@ class ztatic extends CI_Controller {
 
     function img_avatar_128($uid = '') {
         $image_file = $this->auth->get_avatar_filename($uid, 128);
-
         header('Content-Type: image/jpeg');
         readfile($image_file);
     }

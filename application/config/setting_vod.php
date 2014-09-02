@@ -1,6 +1,7 @@
 <?php
 
-$system_root = '/var/www/';
+//$system_root = '/var/www/';
+$system_root = 'F:/xampp/htdocs/vod/';
 $basename = basename($_SERVER['HTTP_HOST']);
 $config['is_system_host'] = TRUE; 
 $config['is_parent_site'] = TRUE;

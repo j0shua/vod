@@ -90,6 +90,11 @@
                         <li><a href="<?php echo site_url('admin/users'); ?>">จัดการผู้ใช้</a></li>
                         <li><a href="<?php echo site_url('resource/subject_manager/main_learning_area'); ?>">กลุ่มสาระ, วิชา, บท</a></li>
                     </ul> 
+               <?php } else if ($rid == 5) {
+                    ?>
+                    <ul class="simple">
+                        <li><a href="<?php echo site_url('report/advance_report/filter/0'); ?>">รายงานสำหรับส่วนกลาง</a></li>
+                    </ul> 
                 <?php } ?>
             </div>
         </div>
